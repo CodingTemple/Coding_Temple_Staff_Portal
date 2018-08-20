@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ super() }}{% endblock %}
+
+{% block app_content %}
+  <div class="row">
+    {% if current_user.is_authenticated %}
+      <h1>Hello, {{ current_user.f_name }}</h1>
+    {% else %}
+      <h1>This is the Index Page</h1>
+    {% endif %}
+  </div>
+{% endblock %}

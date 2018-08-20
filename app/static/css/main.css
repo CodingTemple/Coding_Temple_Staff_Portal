@@ -1,0 +1,8 @@
+#sidebar-1 a, .navbar {
+  border-radius: 0;
+}
+
+#sidebar-1 a:hover {
+  background-color: #41A2D9;
+  color: #fff;
+}

@@ -1,0 +1,43 @@
+{% extends 'layout.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block title %}{{ title }} | {{ super() }}{% endblock %}
+
+{% block app_content %}
+  <div class="row">
+    <h1>{{ description }}</h1>
+    <hr>
+    <form action="{{ url_for('register') }}" class="form-horizontal" method="POST" role="form">
+      {{ form.hidden_tag() }}
+      <div class="form-group">
+        <div class="col-md-6">
+          {{ form.f_name.label }}
+          {{ form.f_name(class='form-control') }}
+        </div>
+        <div class="col-md-6">
+          {{ form.l_name.label }}
+          {{ form.l_name(class='form-control') }}
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-md-12">
+          {{ form.email.label }}
+          {{ form.email(class='form-control') }}
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-md-12">
+          {{ form.password.label }}
+          {{ form.password(class='form-control') }}
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-md-12">
+          {{ form.password2.label }}
+          {{ form.password2(class='form-control') }}
+        </div>
+      </div>
+      {{ form.submit(class='btn btn-primary') }}
+    </form>
+  </div>
+{% endblock %}
