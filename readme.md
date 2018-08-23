@@ -3,6 +3,20 @@
 This is a starter template for creating a flask application. The instructions are as follows:
 
 ## Clone the repository
+## Create your virtual environment
+### MacOS/Linux:
+#### mkdir myproject
+#### cd myproject
+#### python3 -m venv venv
+### Windows:
+#### mkdir myproject
+#### cd myproject
+#### py -3 -m venv venv
+## Activate your Virtual Environment
+### MacOS/Linux:
+#### . venv/bin/activate
+### Windows:
+#### venv\Scripts\activate
 ## In your terminal, set your FLASK_APP variable to run.py
 ### MacOS/Linux:
 ##### export FLASK_APP=run.py
