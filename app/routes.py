@@ -1,5 +1,5 @@
 from app import app, db
-from flask import redirect, render_template, url_for, flash
+from flask import redirect, render_template, url_for, flash, request
 from flask_login import current_user, login_required, login_user, logout_user
 from app.forms import LoginForm, RegistrationForm, AdminForm
 from app.models import User
@@ -39,14 +39,17 @@ def login():
       return redirect(url_for('admin'))
     return redirect(url_for('index'))
   form = LoginForm()
-  if form.validate_on_submit():
-    u = User.query.filter_by(email=form.email.data).first()
-    if u is None or not u.check_password(form.password.data):
-      flash('Invalid email or password. Try again.')
-      return redirect(url_for('login'))
-    login_user(u, remember=form.remember_me.data)
-    flash('You are logged in.')
-    return redirect(url_for('index'))
+  if request.method == 'POST':
+    if form.validate_on_submit():
+      u = User.query.filter_by(email=form.email.data).first()
+      if u is None or not u.check_password(form.password.data):
+        flash('Invalid email or password. Try again.')
+        return redirect(url_for('login'))
+      login_user(u, remember=form.remember_me.data)
+      flash('You are logged in.')
+      return redirect(url_for('index'))
+    flash('CSRF or form failure. Try again.')
+    return redirect(url_for('login'))
   context = {
     'form': LoginForm(),
     'description': 'Login',
