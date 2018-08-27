@@ -23,7 +23,7 @@ def register():
     u.set_password(form.password.data)
     db.session.add(u)
     db.session.commit()
-    flash("You are registered")
+    flash("You are registered", "success")
     return redirect(url_for('login'))
   context = {
     'form': RegistrationForm(),
@@ -43,12 +43,12 @@ def login():
     if form.validate_on_submit():
       u = User.query.filter_by(email=form.email.data).first()
       if u is None or not u.check_password(form.password.data):
-        flash('Invalid email or password. Try again.', 'error')
+        flash('Invalid email or password. Try again.', 'danger')
         return redirect(url_for('login'))
       login_user(u, remember=form.remember_me.data)
-      flash('You are logged in.')
+      flash('You are logged in.', 'success')
       return redirect(url_for('index'))
-    flash('CSRF or form failure. Try again.', 'error')
+    flash('CSRF or form failure. Try again.', 'danger')
     return redirect(url_for('login'))
   context = {
     'form': LoginForm(),
@@ -60,7 +60,7 @@ def login():
 @app.route('/logout')
 def logout():
   logout_user()
-  flash('You are logged out.')
+  flash('You are logged out.', 'success')
   return redirect(url_for('login'))
 
 
@@ -68,7 +68,7 @@ def logout():
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
   if not current_user.is_authenticated or not current_user.role.name == 'Super User':
-    flash('You are not authorized to view this page.')
+    flash('You are not authorized to view this page.', 'danger')
     return redirect(url_for('index'))
   form = AdminForm()
   if form.validate_on_submit():
@@ -76,13 +76,13 @@ def admin():
     print("begin validation...")
     user = User.query.filter_by(email=form.email.data).first()
     if user is not None:
-      flash('That email is already taken. Choose another.')
+      flash('That email is already taken. Choose another.', 'danger')
       return redirect(url_for('admin'))
     new_user = User(f_name=form.f_name.data, l_name=form.l_name.data, email=form.email.data, role_id=form.role.data)
     new_user.set_password(form.email.data)
     db.session.add(new_user)
     db.session.commit()
-    flash('New user created.')
+    flash('New user created.', 'success')
     return redirect(url_for('admin'))
   context = {
     'form': AdminForm(),
