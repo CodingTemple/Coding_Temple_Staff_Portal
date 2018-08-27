@@ -43,12 +43,12 @@ def login():
     if form.validate_on_submit():
       u = User.query.filter_by(email=form.email.data).first()
       if u is None or not u.check_password(form.password.data):
-        flash('Invalid email or password. Try again.')
+        flash('Invalid email or password. Try again.', 'error')
         return redirect(url_for('login'))
       login_user(u, remember=form.remember_me.data)
       flash('You are logged in.')
       return redirect(url_for('index'))
-    flash('CSRF or form failure. Try again.')
+    flash('CSRF or form failure. Try again.', 'error')
     return redirect(url_for('login'))
   context = {
     'form': LoginForm(),
