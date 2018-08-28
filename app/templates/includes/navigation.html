@@ -10,7 +10,7 @@
       </li>
       {% if current_user.role_id == 1 %}
         <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('admin') }}">Admin</a>
+          <a class="nav-link" href="{{ url_for('admin.index') }}">Admin</a>
         </li>
       {% endif %}
     </ul>

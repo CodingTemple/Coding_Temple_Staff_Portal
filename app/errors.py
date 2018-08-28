@@ -1,5 +1,6 @@
 from flask import render_template
-from app import app, db
+from app import app
+from app.models import db
 
 @app.errorhandler(404)
 def not_found_error(error):
@@ -15,3 +16,10 @@ def internal_error(error):
     'title': '500 Error'
   }
   return render_template('500.html', **context), 500
+
+@app.errorhandler(401)
+def unauthorized_error(error):
+  context = {
+    'title': '401 Error'
+  }
+  return render_template('401.html', **context), 404
