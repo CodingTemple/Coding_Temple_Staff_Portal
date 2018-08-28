@@ -6,7 +6,7 @@ def not_found_error(error):
   context = {
     'title': '404 Error'
   }
-  return render_template('404.html'), 404
+  return render_template('404.html', **context), 404
 
 @app.errorhandler(500)
 def internal_error(error):
@@ -14,4 +14,4 @@ def internal_error(error):
   context = {
     'title': '500 Error'
   }
-  return render_template('500.html'), 500
+  return render_template('500.html', **context), 500
