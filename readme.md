@@ -22,6 +22,15 @@ This is a starter template for creating a flask application. The instructions ar
 ##### exportfla FLASK_APP=run.py
 ### Windows:
 ##### set FLASK_APP=run.py
+### Powershell
+##### $Env:FLASK_APP = "run.py"
 ## In your terminal, install all of the required modules
 ### Windows/Linux/MacOS:
 ##### pip install -r requirements.txt
+
+## Manage PIP dependencies
+### Anytime you install something via pip install, be sure to:
+#### pip freeze > requirements.txt
+
+## db migrations
+### flask db upgrade
