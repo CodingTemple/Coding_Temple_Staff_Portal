@@ -7,10 +7,9 @@ admin = Blueprint('admin', __name__, template_folder='templates', static_folder=
 
 @login_required
 @admin.route('/', methods=['GET', 'POST'])
-def show():
+def index():
   if not current_user.is_authenticated or not current_user.role.name == 'Super User':
-    flash('You are not authorized to view this page.', 'danger')
-    return redirect(url_for('index'))
+    abort(401)
   form = AdminForm()
   if form.validate_on_submit():
     print(form.role.data)
@@ -18,16 +17,16 @@ def show():
     user = User.query.filter_by(email=form.email.data).first()
     if user is not None:
       flash('That email is already taken. Choose another.', 'danger')
-      return redirect(url_for('admin'))
+      return redirect(url_for('.index'))
     new_user = User(f_name=form.f_name.data, l_name=form.l_name.data, email=form.email.data, role_id=form.role.data)
     new_user.set_password(form.email.data)
     db.session.add(new_user)
     db.session.commit()
     flash('New user created.', 'success')
-    return redirect(url_for('admin'))
+    return redirect(url_for('.index'))
   context = {
     'form': AdminForm(),
     'description': 'Create a new user',
     'title': 'Admin'
   }
-  return render_template('admin/admin.html', **context)
+  return render_template('admin/index.html', **context)

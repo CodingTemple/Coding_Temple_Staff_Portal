@@ -16,3 +16,10 @@ def internal_error(error):
     'title': '500 Error'
   }
   return render_template('500.html', **context), 500
+
+@app.errorhandler(401)
+def unauthorized_error(error):
+  context = {
+    'title': '401 Error'
+  }
+  return render_template('401.html', **context), 404
