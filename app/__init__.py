@@ -1,13 +1,18 @@
 from flask import Flask
-from config import Config
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_login import LoginManager
-
 app = Flask(__name__)
+from config import Config
 app.config.from_object(Config)
-db = SQLAlchemy(app)
+
+from flask_login import LoginManager
 login = LoginManager(app)
+
+from app.models import db
+db.init_app(app)
+from flask_migrate import Migrate
 migrate = Migrate(app, db)
 
+from app.blueprints.admin import admin
+app.register_blueprint(admin,  url_prefix='/admin')
 from app import routes, models, errors
+
+
