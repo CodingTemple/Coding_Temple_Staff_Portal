@@ -1,13 +1,36 @@
 from flask import abort, Blueprint, current_app, flash, redirect, render_template, url_for
 from flask_login import current_user, login_required
 from app.blueprints.admin.forms import AdminForm
-from app.models import User, db
+from app.models import User, Role, db
 
 admin = Blueprint('admin', __name__, template_folder='templates', static_folder='static')
 
 @login_required
-@admin.route('/', methods=['GET', 'POST'])
+@admin.route('/', methods=['GET'])
 def index():
+  if not current_user.is_authenticated or not current_user.role.name == 'Super User':
+    abort(401)
+  context = {
+    'title': 'User Administration',
+    'description': 'Manage Users and Roles'
+  }
+  return render_template('admin/index.html', **context)
+
+@login_required
+@admin.route('/roles', methods=['GET'])
+def roles():
+  if not current_user.is_authenticated or not current_user.role.name == 'Super User':
+    abort(401)
+  context = {
+    'roles': Role.query.all(),
+    'title': 'Roles',
+    'description': 'Manage Users and Roles'
+  }
+  return render_template('admin/roles.html', **context)
+
+@login_required
+@admin.route('/users', methods=['GET', 'POST'])
+def users():
   if not current_user.is_authenticated or not current_user.role.name == 'Super User':
     abort(401)
   form = AdminForm()
@@ -29,4 +52,4 @@ def index():
     'description': 'Create a new user',
     'title': 'Admin'
   }
-  return render_template('admin/index.html', **context)
+  return render_template('admin/users.html', **context)
