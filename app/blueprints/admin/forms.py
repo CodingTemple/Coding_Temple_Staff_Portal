@@ -18,3 +18,11 @@ class AdminForm(FlaskForm):
     u = User.query.filter_by(email=email.data).first()
     if u is not None:
       raise ValidationError('Please use a different email.')
+
+class RoleForm(FlaskForm):
+  name = StringField('Role Name', validators=[DataRequired()])
+  submit = SubmitField('Submit')
+  def validate_name(self, name):
+    r = Role.query.filter_by(name=name.data).first()
+    if r is not None:
+      raise ValidationError('Please use a different name')

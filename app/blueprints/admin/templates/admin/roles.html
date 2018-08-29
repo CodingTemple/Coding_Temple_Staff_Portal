@@ -16,14 +16,14 @@
             {% for role in roles %}
                 <tr>
                     <th>{{role.name}}</th>
-                    <td><button class="btn" disabled>View Users</button></td>
-                    <td><button class="btn" disabled>Edit</button></td>
-                    <td><button class="btn btn-danger" disabled>Delete</button></td>
+                    <td><a href="{{url_for('admin.users')}}?role={{role.name}}" class="btn btn-secondary">View Users</a></td>
+                    <td><a href="{{url_for('admin.rolesedit')}}?id={{role.id}}" class="btn btn-secondary">Edit</a></td>
+                    <td><a href="{{url_for('admin.rolesdelete')}}?id={{role.id}}" class="btn btn-danger">Delete</a></td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
-    <a href="#" class="btn btn-primary">Add Role</a>
+    <a href="{{url_for('admin.rolesadd')}}" class="btn btn-secondary">Add Role</a>
 
 {% endblock %}
 

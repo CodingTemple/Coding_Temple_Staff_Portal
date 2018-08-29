@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ title }} | {{ super() }}{% endblock %}
+
+{% block app_content %}
+    
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{url_for('index')}}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url_for('admin.index')}}">Manage Users And Roles</a></li>
+            <li class="breadcrumb-item"><a href="{{url_for('admin.roles')}}">Manage Roles</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit Role</li>
+        </ol>
+    </nav>
+    
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{% endblock %}
+
+
