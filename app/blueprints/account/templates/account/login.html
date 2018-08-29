@@ -6,7 +6,7 @@
   <h1>{{ description }}</h1>
   <hr>
   
-  <form action="" method="POST" role="form">
+  <form action="{{ url_for('account.login') }}" method="POST" role="form">
     {{ form.hidden_tag() }}
     <div class="form-group">
       {{ form.email.label }}

@@ -18,9 +18,11 @@ class User(UserMixin, db.Model):
   role = db.relationship('Role', backref='role')
 
   def set_password(self, password):
+    '''Sets the password_hash property via a built-in hash function'''
     self.password_hash = generate_password_hash(password)
 
   def check_password(self, password):
+    '''Checks the password against the saved, hashed password value'''
     return check_password_hash(self.password_hash, password)
 
   def __repr__(self):
@@ -69,4 +71,5 @@ class Assignment(db.Model):
 
 @login.user_loader
 def load_user(id):
+  ''' Gets the user by their user ID'''
   return User.query.get(int(id))
