@@ -1,6 +1,6 @@
 from flask import abort, Blueprint, current_app, flash, redirect, render_template, url_for
 from flask_login import current_user, login_required
-from app.forms import AdminForm
+from app.blueprints.admin.forms import AdminForm
 from app.models import User, db
 
 admin = Blueprint('admin', __name__, template_folder='templates', static_folder='static')

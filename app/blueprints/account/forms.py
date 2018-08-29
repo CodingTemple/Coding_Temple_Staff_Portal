@@ -24,18 +24,3 @@ class LoginForm(FlaskForm):
   password = PasswordField('Password', validators=[DataRequired()])
   remember_me = BooleanField('Remember Me', description='Remember Me')
   submit = SubmitField('Login')
-
-
-class AdminForm(FlaskForm):
-  with app.app_context():
-    f_name = StringField('First Name', validators=[DataRequired()])
-    l_name = StringField('Last Name', validators=[DataRequired()])
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    role = SelectField('Role', validators=[DataRequired()], choices=[(i.id, i.name) for i in Role.query.all()], coerce=int)
-    # role = StringField('Role', validators=[DataRequired()])
-    submit = SubmitField('Create User')
-
-  def validate_email(self, email):
-    u = User.query.filter_by(email=email.data).first()
-    if u is not None:
-      raise ValidationError('Please use a different email.')
