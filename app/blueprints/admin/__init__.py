@@ -1,4 +1,4 @@
-from flask import abort, Blueprint, current_app, flash, redirect, render_template, url_for
+from flask import abort, Blueprint, current_app, flash, redirect, render_template,request, url_for
 from flask_login import current_user, login_required
 from app.blueprints.admin.forms import AdminForm, RoleForm
 from app.models import User, Role, db
@@ -29,11 +29,20 @@ def roles():
   return render_template('admin/roles.html', **context)
 
 @login_required
-@admin.route('/roles/add', methods=['GET'])
+@admin.route('/roles/add', methods=['GET', 'POST'])
 def rolesadd():
   if not current_user.is_authenticated or not current_user.role.name == 'Super User':
     abort(401)
   form = RoleForm()
+  if request.method == 'POST':
+    if form.validate_on_submit():
+      role = Role(name= form.name.data)
+      db.session.add(role)
+      db.session.commit()
+      flash('Role Added', 'Success')
+      return redirect(url_for('.roles'))
+    else:
+      flash('Choose a different role name', 'danger')
   context = {
     'form': form
   }
