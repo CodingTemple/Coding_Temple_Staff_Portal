@@ -1,4 +1,4 @@
-# Flask Starter Files
+# Setting up a Flask app
 
 This is a starter template for creating a flask application. The instructions are as follows:
 
