@@ -25,3 +25,5 @@ This is a starter template for creating a flask application. The instructions ar
 ## In your terminal, install all of the required modules
 ### Windows/Linux/MacOS:
 ##### pip install -r requirements.txt
+## Serve up the application on your local web server
+##### flask run
