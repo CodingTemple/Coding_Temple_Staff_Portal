@@ -28,8 +28,7 @@ class AdminForm(FlaskForm):
   f_name = StringField('First Name', validators=[DataRequired()])
   l_name = StringField('Last Name', validators=[DataRequired()])
   email = StringField('Email', validators=[DataRequired(), Email()])
-  role = SelectField('Role', validators=[DataRequired()], choices=[(i.id, i.name) for i in Role.query.all()], coerce=int)
-  # role = StringField('Role', validators=[DataRequired()])
+  role = SelectField('Role', validators=[DataRequired()], choices=[(i.id, i.name) if i else (i.id, i.name) for i in Role.query.order_by('name').all()], coerce=int)
   submit = SubmitField('Create User')
 
   def validate_email(self, email):

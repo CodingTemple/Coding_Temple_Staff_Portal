@@ -32,11 +32,26 @@ class Role(db.Model):
     return f"<Role: {self.name}>"
 
 
+class Instructor(db.Model):
+  id = db.Column(db.Integer, primary_key=True)
+  name = db.Column(db.String)
+  course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
+
+
 class Course(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String)
+  instructor = db.Column(db.String)
+  start_date = db.Column(db.DateTime)
+  end_date = db.Column(db.DateTime)
+  weeks = db.Column(db.Integer)
+  notes = db.Column(db.String)
   students = db.relationship('Student', backref='course', lazy='dynamic')
   semester_id = db.Column(db.Integer, db.ForeignKey('semester.id'))
+  instructor_id = db.Column(db.Integer, db.ForeignKey('instructor.id'))
+
+  def __repr__(self):
+    return f"<Course: {self.name}>"
 
 
 class Student(db.Model):
@@ -50,8 +65,6 @@ class Student(db.Model):
 class Semester(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   prog_lang = db.Column(db.String)
-  month = db.Column(db.Integer)
-  year = db.Column(db.Integer)
   courses = db.relationship('Course', backref='course', lazy='dynamic')
 
 

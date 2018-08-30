@@ -65,7 +65,7 @@ def logout():
 
 
 @login_required
-@app.route('/admin', methods=['GET', 'POST'])
+@app.route('/admin/new_user', methods=['GET', 'POST'])
 def admin():
   if not current_user.is_authenticated or not current_user.role.name == 'Super User':
     flash('You are not authorized to view this page.', 'danger')
@@ -89,4 +89,4 @@ def admin():
     'description': 'Create a new user',
     'title': 'Admin'
   }
-  return render_template('admin/admin.html', **context)
+  return render_template('admin/create_new_user.html', **context)
