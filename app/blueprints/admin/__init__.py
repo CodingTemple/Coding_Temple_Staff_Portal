@@ -92,27 +92,66 @@ def rolesdelete():
   return redirect(url_for('.roles'))
 
 @login_required
-@admin.route('/users', methods=['GET', 'POST'])
+@admin.route('/users', methods=['GET'])
 def users():
   if not current_user.is_authenticated or not current_user.role.name == 'Super User':
     abort(401)
-  form = AdminForm()
-  if form.validate_on_submit():
-    print(form.role.data)
-    print("begin validation...")
-    user = User.query.filter_by(email=form.email.data).first()
-    if user is not None:
-      flash('That email is already taken. Choose another.', 'danger')
-      return redirect(url_for('.index'))
-    new_user = User(f_name=form.f_name.data, l_name=form.l_name.data, email=form.email.data, role_id=form.role.data)
-    new_user.set_password(form.email.data)
-    db.session.add(new_user)
-    db.session.commit()
-    flash('New user created.', 'success')
-    return redirect(url_for('.index'))
+  rid = request.args.get('role')
+  if rid is not None:
+    users = User.query.filter(User.role_id == rid).all()
+  else:
+    users = User.query.all()
   context = {
-    'form': AdminForm(),
-    'description': 'Create a new user',
-    'title': 'Admin'
+    'users': users
   }
   return render_template('admin/users.html', **context)
+
+@login_required
+@admin.route('/users/edit', methods=['GET', 'POST'])
+def usersedit():
+  context = {
+
+  }
+  return render_template('admin/usersedit.html', **context)
+
+@login_required
+@admin.route('/users/delete', methods=['POST'])
+def usersdelete():
+  if not current_user.is_authenticated or not current_user.role.name == 'Super User':
+    abort(401)
+  uid = request.form['id']
+  cuid = current_user.id
+  user = User.query.filter(User.id == uid).filter(User.id != cuid).first()
+  if user is not None:
+    db.session.delete(user)
+    db.session.commit()
+    flash('Deleted user ' + uid, 'success')
+  else:
+    flash('Cannot delete this user', 'danger')
+  return redirect(url_for('.users'))
+  
+
+@login_required
+@admin.route('/users/add', methods=['GET', 'POST'])
+def usersadd():
+  if not current_user.is_authenticated or not current_user.role.name == 'Super User':
+    abort(401)
+  form = AdminForm()
+  if request.method == 'POST':
+    if form.validate_on_submit():
+      new_user = User(f_name=form.f_name.data, l_name=form.l_name.data, email=form.email.data, role_id=form.role.data)
+      new_user.set_password(form.email.data)
+      db.session.add(new_user)
+      db.session.commit()
+      flash('New user created.', 'success')
+      return redirect(url_for('.users'))
+    else:
+      flash('That email is already taken. Choose another.', 'danger')
+      return redirect(url_for('.usersadd'))
+  else:
+    context = {
+      'form': AdminForm(),
+      'description': 'Create a new user',
+      'title': 'Admin'
+    }
+    return render_template('admin/usersadd.html', **context)

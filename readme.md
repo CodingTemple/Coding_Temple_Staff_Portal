@@ -64,6 +64,12 @@ $Env:FLASK_ENV = "development"
 ```Shell
 pip install -r requirements.txt
 ```
+ 
+- [ ] Run the app
+
+```Shell
+flask run
+```
 
 ## Manage PIP dependencies
 
