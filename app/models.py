@@ -8,6 +8,7 @@ class User(UserMixin, db.Model):
   id = db.Column(db.Integer, primary_key=True)
   f_name = db.Column(db.String)
   l_name = db.Column(db.String)
+  image = db.Column(db.String, default='http://placehold.it/400x900&text=Image')
   email = db.Column(db.String, index=True, unique=True)
   password_hash = db.Column(db.String)
   role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
@@ -41,11 +42,9 @@ class Instructor(db.Model):
 class Course(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String)
-  instructor = db.Column(db.String)
   start_date = db.Column(db.DateTime)
   end_date = db.Column(db.DateTime)
   weeks = db.Column(db.Integer)
-  notes = db.Column(db.String)
   students = db.relationship('Student', backref='course', lazy='dynamic')
   semester_id = db.Column(db.Integer, db.ForeignKey('semester.id'))
   instructor_id = db.Column(db.Integer, db.ForeignKey('instructor.id'))
@@ -64,7 +63,7 @@ class Student(db.Model):
 
 class Semester(db.Model):
   id = db.Column(db.Integer, primary_key=True)
-  prog_lang = db.Column(db.String)
+  name = db.Column(db.String)
   courses = db.relationship('Course', backref='course', lazy='dynamic')
 
 

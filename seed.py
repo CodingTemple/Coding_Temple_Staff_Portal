@@ -1,5 +1,5 @@
 from app import app, db
-from app.models import User, Role
+from app.models import User, Role, Course
 import sqlalchemy
 
 def seed_data():
@@ -14,8 +14,10 @@ def seed_data():
       )
       user.set_password(user.password_hash)
       db.session.add(user)
+    
     if not Role.query.all():
       db.session.add_all([Role(name=i) for i in ["Super User", "Administrator", "Student"]])
+    
     db.create_all()
     db.session.commit()
   except sqlalchemy.exc.SQLAlchemyError:

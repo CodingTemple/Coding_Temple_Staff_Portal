@@ -90,3 +90,10 @@ def admin():
     'title': 'Admin'
   }
   return render_template('admin/create_new_user.html', **context)
+
+@app.route('/notes')
+def notes():
+  context = {
+
+  }
+  return render_template('notes.html', **context)
