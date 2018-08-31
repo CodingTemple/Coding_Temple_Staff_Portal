@@ -20,10 +20,12 @@ class AdminForm(FlaskForm):
       raise ValidationError('Please use a different email.')
 
 class RoleForm(FlaskForm):
-  id = HiddenField('ID')
+  rid = HiddenField('ID')
   name = StringField('Name', validators=[DataRequired()])
   submit = SubmitField('Submit')
   def validate_name(self, name):
-    r = Role.query.filter_by(name=name.data).first()
+    local_id = self.rid.data
+    local_name = self.name.data
+    r = Role.query.filter(Role.name==local_name).filter(Role.id!=local_id).first()
     if r is not None:
       raise ValidationError('Please use a different name')

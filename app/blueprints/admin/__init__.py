@@ -1,4 +1,4 @@
-from flask import abort, Blueprint, current_app, flash, redirect, render_template,request, url_for
+from flask import abort, Blueprint, current_app, flash, redirect, request, render_template,request, url_for
 from flask_login import current_user, login_required
 from app.blueprints.admin.forms import AdminForm, RoleForm
 from app.models import User, Role, db
@@ -49,22 +49,47 @@ def rolesadd():
   return render_template('admin/rolesadd.html', **context)
 
 @login_required
-@admin.route('/roles/edit', methods=['GET'])
+@admin.route('/roles/edit', methods=['GET', 'POST'])
 def rolesedit():
   if not current_user.is_authenticated or not current_user.role.name == 'Super User':
     abort(401)
+  form = RoleForm()
+  rid = request.args.get('id') or form.rid.data
+  role = Role.query.filter_by(id=rid).first()
+  if rid is None or role is None:
+    flash('Role not found', 'danger')
+    return redirect(url_for('.roles'))
+  if request.method == 'POST':
+    if form.validate_on_submit():
+      role.name = form.name.data
+      db.session.commit()
+      flash('Role updated', 'success')
+      return redirect(url_for('.roles'))
+    else:
+      flash('Choose a different role name', 'danger')
+  form.name.data = role.name  
+  form.rid.data = role.id
   context = {
-    
+    'form': form
   }
   return render_template('admin/rolesedit.html', **context)
 
 @login_required
-@admin.route('/roles/delete', methods=['GET'])
+@admin.route('/roles/delete', methods=['POST'])
 def rolesdelete():
   if not current_user.is_authenticated or not current_user.role.name == 'Super User':
     abort(401)
-  flash('You called delete', 'warning')
-  return redirect(url_for('admin.roles'))
+  rid = request.form['id']
+  userCount = User.query.filter(User.role_id == rid).count()
+  if userCount > 0:
+    flash('You cannot delete a role with users assigned to it', 'danger')
+  else:
+    role = Role.query.filter(Role.id == rid).first()
+    role_name = role.name
+    db.session.delete(role)
+    db.session.commit()
+    flash('Deleted role ' + role_name, 'success')
+  return redirect(url_for('.roles'))
 
 @login_required
 @admin.route('/users', methods=['GET', 'POST'])
