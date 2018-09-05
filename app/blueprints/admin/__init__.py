@@ -109,8 +109,32 @@ def users():
 @login_required
 @admin.route('/users/edit', methods=['GET', 'POST'])
 def usersedit():
+  if not current_user.is_authenticated or not current_user.role.name == 'Super User':
+    abort(401)
+  form = AdminForm()
+  uid = request.args.get('id') or request.form['uid'] 
+  cuid = current_user.id
+  user = User.query.filter(User.id == uid).filter(User.id != cuid).first()
+  if request.method == 'POST':
+    if form.validate_on_submit():
+      if user is not None:
+        user.f_name = form.f_name.data
+        user.l_name = form.l_name.data
+        user.role_id = form.role.data
+        db.session.commit()
+        flash('Updated user ' + uid, 'success') 
+        return redirect(url_for('.users'))
+    flash('Could not update user.', 'danger')
+  form.f_name.data = user.f_name
+  form.l_name.data = user.l_name
+  form.role.data = user.role_id
+  form.email.data = user.email
   context = {
-
+    'id': user.id,
+    'email': user.email,
+    'form': form,
+    'description': 'Update user',
+    'title': 'Admin'
   }
   return render_template('admin/usersedit.html', **context)
 
