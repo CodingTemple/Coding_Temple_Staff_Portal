@@ -6,6 +6,7 @@ Create Date: 2018-08-31 12:12:15.336781
 
 """
 from alembic import op
+from sqlalchemy import Column, ForeignKey
 import sqlalchemy as sa
 
 
@@ -23,8 +24,6 @@ def upgrade():
     sa.Column('name', sa.String(), nullable=True),
     sa.Column('due_date', sa.DateTime(), nullable=True),
     sa.Column('date_submitted', sa.DateTime(), nullable=True),
-    sa.Column('student_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['student_id'], ['student.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_assignment_date_submitted'), 'assignment', ['date_submitted'], unique=False)
@@ -35,17 +34,11 @@ def upgrade():
     sa.Column('start_date', sa.DateTime(), nullable=True),
     sa.Column('end_date', sa.DateTime(), nullable=True),
     sa.Column('weeks', sa.Integer(), nullable=True),
-    sa.Column('semester_id', sa.Integer(), nullable=True),
-    sa.Column('instructor_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['instructor_id'], ['instructor.id'], ),
-    sa.ForeignKeyConstraint(['semester_id'], ['semester.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('instructor',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=True),
-    sa.Column('course_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['course_id'], ['course.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('role',
@@ -61,9 +54,7 @@ def upgrade():
     op.create_table('student',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=True),
-    sa.Column('course_id', sa.Integer(), nullable=True),
     sa.Column('days_missed', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['course_id'], ['course.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('user',
@@ -78,6 +69,22 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_user_email'), 'user', ['email'], unique=True)
+    op.add_column('assignment',
+        Column('student_id', sa.Integer(), ForeignKey('student.id'))
+    )
+    op.add_column('course',
+        Column('instructor_id', sa.Integer(), ForeignKey('instructor.id'))
+    )
+    op.add_column('course',
+        Column('semester_id', sa.Integer(), ForeignKey('semester.id'))
+    )
+    op.add_column('instructor',
+        Column('course_id', sa.Integer(), ForeignKey('course.id'))
+    )
+    op.add_column('student',
+        Column('course_id', sa.Integer(), ForeignKey('course.id'))
+    )
+    
     # ### end Alembic commands ###
 
 
