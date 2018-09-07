@@ -1,4 +1,4 @@
-# Flask Starter Files
+# Setting up a Flask app
 
 This is a starter template for creating a flask application. The instructions are as follows:
 
@@ -19,7 +19,7 @@ This is a starter template for creating a flask application. The instructions ar
 #### venv\Scripts\activate
 ## In your terminal, set your FLASK_APP variable to run.py
 ### MacOS/Linux:
-##### exportfla FLASK_APP=run.py
+##### export FLASK_APP=run.py
 ### Windows:
 ##### set FLASK_APP=run.py
 ### Powershell
@@ -34,3 +34,7 @@ This is a starter template for creating a flask application. The instructions ar
 
 ## db migrations
 ### flask db upgrade
+
+## Seed User
+$Env:SU_1 = "password"
+flask seed_data

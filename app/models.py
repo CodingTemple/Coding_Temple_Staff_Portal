@@ -12,6 +12,7 @@ class User(UserMixin, db.Model):
   id = db.Column(db.Integer, primary_key=True)
   f_name = db.Column(db.String)
   l_name = db.Column(db.String)
+  image = db.Column(db.String, default='http://placehold.it/400x900&text=Image')
   email = db.Column(db.String, index=True, unique=True)
   password_hash = db.Column(db.String)
   role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
@@ -38,11 +39,24 @@ class Role(db.Model):
     return f"<Role: {self.name}>"
 
 
+class Instructor(db.Model):
+  id = db.Column(db.Integer, primary_key=True)
+  name = db.Column(db.String)
+  course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
+
+
 class Course(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String)
+  start_date = db.Column(db.DateTime)
+  end_date = db.Column(db.DateTime)
+  weeks = db.Column(db.Integer)
   students = db.relationship('Student', backref='course', lazy='dynamic')
   semester_id = db.Column(db.Integer, db.ForeignKey('semester.id'))
+  instructor_id = db.Column(db.Integer, db.ForeignKey('instructor.id'))
+
+  def __repr__(self):
+    return f"<Course: {self.name}>"
 
 
 class Student(db.Model):
@@ -55,9 +69,7 @@ class Student(db.Model):
 
 class Semester(db.Model):
   id = db.Column(db.Integer, primary_key=True)
-  prog_lang = db.Column(db.String)
-  month = db.Column(db.Integer)
-  year = db.Column(db.Integer)
+  name = db.Column(db.String)
   courses = db.relationship('Course', backref='course', lazy='dynamic')
 
 
