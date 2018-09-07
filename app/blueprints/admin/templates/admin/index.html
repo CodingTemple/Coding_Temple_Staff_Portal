@@ -3,37 +3,36 @@
 {% block title %}{{ title }} | {{ super() }}{% endblock %}
 
 {% block app_content %}
-  <h1>{{ description }}</h1>
-  <hr>
-  <form action="{{ url_for('admin.index') }}" class="form-horizontal" method="POST" role="form">
-    {{ form.hidden_tag() }}
-    <div class="form-row">
-      <div class="form-group col-md-6">
-        {{ form.f_name.label }}
-        {{ form.f_name(class='form-control') }}
-      </div>
-      <div class="form-group col-md-6">
-        {{ form.l_name.label }}
-        {{ form.l_name(class='form-control') }}
-      </div>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{url_for('index')}}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Manage Users And Roles</li>
+        </ol>
+    </nav>
+    <div class="row">
+    <div class="col-12 col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Users</h5>
+                <p class="card-text">Add, remove, or update users</p>
+                <a href="{{ url_for('admin.users') }}" class="btn btn-primary">Manage Users</a>
+            </div>
+            </div>
     </div>
-    <div class="form-group">
-      {{ form.email.label }}
-      {{ form.email(class='form-control') }}
+    <div class="col-12 col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Roles</h5>
+                <p class="card-text">Add, remove, or update roles</p>
+                <a href="{{ url_for('admin.roles') }}" class="btn btn-primary">Manage Roles</a>
+            </div>
+            </div>
     </div>
-    <div class="form-group">
-      {{ form.role.label }}
-      {{ form.role(class='form-control') }}
-    </div>
-    {{ form.submit(class='btn btn-primary') }}
-  </form>
+</div>
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
-<script>
-  $('form').on('submit', e => {
-    console.log(typeof parseInt($('select[name="role"]').val()));
-  })
-</script>
 {% endblock %}
+
+
