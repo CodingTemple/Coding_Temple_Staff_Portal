@@ -5,9 +5,9 @@
 {% block app_content %}
   <div class="row">
     {% if current_user.is_authenticated %}
-      <h1>Hello, {{ current_user.f_name }}</h1>
+      <h4>Hello, {{ current_user.f_name }}</h4>
     {% else %}
-      <h1>This is the Index Page</h1>
+      <h4>This is the Index Page</h4>
     {% endif %}
   </div>
 {% endblock %}
