@@ -27,7 +27,7 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><span class="oi oi-person" title="person" aria-hidden="true"></span> {{ "{}, {}".format(current_user.l_name, current_user.f_name) }}</a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href=""><span class="oi oi-list"></span> Profile</a>
+              <a class="dropdown-item" href="{{ url_for('account.profile') }}"><span class="oi oi-list"></span> Profile</a>
               <a class="dropdown-item" href="{{ url_for('account.logout') }}"><span class="oi oi-account-logout"></span> Logout</a>
             </div>
           </li>

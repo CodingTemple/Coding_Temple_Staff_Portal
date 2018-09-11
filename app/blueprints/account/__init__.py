@@ -1,7 +1,10 @@
 from flask import Blueprint, flash, render_template, redirect, request, url_for
-from flask_login import current_user, login_user, logout_user
-from app.blueprints.account.forms import LoginForm, RegistrationForm
+from flask_login import current_user, login_user, logout_user, login_required
+from app.blueprints.account.forms import LoginForm, RegistrationForm, ProfileForm
 from app.models import User, db
+from app import app
+import time, os
+from datetime import date
 
 account = Blueprint('account', __name__, template_folder='templates', static_folder='static')
 
@@ -54,3 +57,34 @@ def logout():
   logout_user()
   flash('You are logged out.', 'success')
   return redirect(url_for('account.login'))
+
+@login_required
+@account.route('/profile', methods=['GET', 'POST'])
+def profile():
+  form = ProfileForm()
+  if not current_user.is_authenticated:
+    return redirect(url_for('index'))
+  if form.validate_on_submit():
+    print("form is valid")
+    user = User.query.get(current_user.id)
+    user.f_name = form.first_name.data
+    user.l_name = form.last_name.data
+    user.email = form.email.data
+    user.bio = form.bio.data
+    if not os.path.exists(app.config['PROFILE_PICS_FOLDER']):
+      print("created folder")
+      os.makedirs(app.config['PROFILE_PICS_FOLDER'])
+    filename = str(int(time.time())) + '.png'
+    print(os.path.join(app.config['PROFILE_PICS_FOLDER'], filename))
+    form.image.data.save(os.path.join(app.config['PROFILE_PICS_FOLDER'], filename))
+    user.image = filename
+    db.session.commit()
+    print("data commited")
+    flash('Profile edited successfully', 'success')
+    return redirect(url_for('account.profile'))
+  context = {
+    'title': 'Profile',
+    'description': 'Profile',
+    'form': form,
+  }
+  return render_template('account/profile.html', **context)
