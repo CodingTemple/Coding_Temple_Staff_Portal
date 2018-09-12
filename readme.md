@@ -42,6 +42,7 @@ venv\Scripts\activate
 
 ```Shell
 export FLASK_APP=run.py
+export FLASK_DEBUG=1
 export FLASK_ENV=development
 ```
 
@@ -49,6 +50,7 @@ export FLASK_ENV=development
 
 ```Shell
 set FLASK_APP=run.py
+set FLASK_DEBUG=1
 set FLASE_ENV=development
 ```
 
@@ -56,6 +58,7 @@ set FLASE_ENV=development
 
 ```PowerShell
 $Env:FLASK_APP = "run.py"
+$Env:FLASK_DEBUG = 1
 $Env:FLASK_ENV = "development"
 ```
 
