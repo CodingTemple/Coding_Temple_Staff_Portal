@@ -12,9 +12,6 @@ db.init_app(app)
 from flask_migrate import Migrate
 migrate = Migrate(app, db)
 
-from flask_datepicker import datepicker
-datepicker(app)
-
 from app.blueprints.admin import admin
 app.register_blueprint(admin,  url_prefix='/admin')
 from app.blueprints.account import account
