@@ -32,5 +32,4 @@ class ProfileForm(FlaskForm):
   last_name = StringField('Last Name', description='Last Name', validators=[DataRequired()])
   email = StringField('Email', description='Email', validators=[Email(), DataRequired()])
   bio = TextAreaField('Bio', description='Write a short bio...')
-  date = DateField('Date', format="%m/%d/%Y")
   submit = SubmitField('Submit')
