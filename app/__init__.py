@@ -17,6 +17,12 @@ app.register_blueprint(admin,  url_prefix='/admin')
 from app.blueprints.account import account
 
 app.register_blueprint(account, url_prefix='/account')
+
+from app.blueprints.courses import courses
+app.register_blueprint(courses, url_prefix='/courses')
+
 from app import routes, models, errors
+
+
 
 
