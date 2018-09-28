@@ -1,5 +1,5 @@
 from app import app, db
-from app.models import User, Role, Course, userRole
+from app.models import User, Role, Course, UserRole
 import sqlalchemy
 
 @app.cli.command()
