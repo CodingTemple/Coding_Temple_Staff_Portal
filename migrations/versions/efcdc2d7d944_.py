@@ -7,6 +7,7 @@ Create Date: 2018-09-28 13:25:21.193112
 """
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy import Column, ForeignKey
 
 
 # revision identifiers, used by Alembic.
@@ -23,8 +24,6 @@ def upgrade():
     sa.Column('name', sa.String(), nullable=True),
     sa.Column('due_date', sa.DateTime(), nullable=True),
     sa.Column('date_submitted', sa.DateTime(), nullable=True),
-    sa.Column('student_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['student_id'], ['student.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_assignment_date_submitted'), 'assignment', ['date_submitted'], unique=False)
@@ -35,20 +34,12 @@ def upgrade():
     sa.Column('start_date', sa.DateTime(), nullable=True),
     sa.Column('end_date', sa.DateTime(), nullable=True),
     sa.Column('weeks', sa.Integer(), nullable=True),
-    sa.Column('semester_id', sa.Integer(), nullable=True),
-    sa.Column('instructor_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['instructor_id'], ['instructor.id'], ),
-    sa.ForeignKeyConstraint(['semester_id'], ['semester.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('instructor',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('f_name', sa.String(), nullable=True),
     sa.Column('l_name', sa.String(), nullable=True),
-    sa.Column('course_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['course_id'], ['course.id'], ),
-    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('note',
@@ -56,10 +47,6 @@ def upgrade():
     sa.Column('date', sa.DateTime(), nullable=True),
     sa.Column('note', sa.String(), nullable=True),
     sa.Column('in_class', sa.Boolean(), nullable=True),
-    sa.Column('course_id', sa.Integer(), nullable=True),
-    sa.Column('instructor_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['course_id'], ['course.id'], ),
-    sa.ForeignKeyConstraint(['instructor_id'], ['instructor.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('role',
@@ -74,13 +61,9 @@ def upgrade():
     )
     op.create_table('student',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('f_name', sa.String(), nullable=True),
     sa.Column('l_name', sa.String(), nullable=True),
-    sa.Column('course_id', sa.Integer(), nullable=True),
     sa.Column('days_missed', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['course_id'], ['course.id'], ),
-    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('user',
@@ -90,11 +73,50 @@ def upgrade():
     sa.Column('image', sa.String(), nullable=True),
     sa.Column('email', sa.String(), nullable=True),
     sa.Column('password_hash', sa.String(), nullable=True),
-    sa.Column('role_id', sa.Integer(), nullable=True),
     sa.Column('bio', sa.String(), nullable=True),
-    sa.ForeignKeyConstraint(['role_id'], ['role.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+
+    op.add_column('assignment',
+        Column('student_id', sa.Integer(), ForeignKey('student.id'))
+    )
+
+    op.add_column('course',
+        Column('semester_id', sa.Integer(), ForeignKey('semester.id'))
+    )
+
+    op.add_column('course',
+        Column('instructor_id', sa.Integer(), ForeignKey('instructor.id'))
+    )
+
+    op.add_column('instructor',
+        Column('course_id', sa.Integer(), ForeignKey('course.id'))
+    )
+
+    op.add_column('instructor',
+        Column('user_id', sa.Integer(), ForeignKey('user.id'))
+    )
+
+    op.add_column('note',
+        Column('course_id', sa.Integer(), ForeignKey('course.id'))
+    )
+
+    op.add_column('note',
+        Column('instructor_id', sa.Integer(), ForeignKey('instructor.id'))
+    )
+
+    op.add_column('student',
+        Column('course_id', sa.Integer(), ForeignKey('course.id'))
+    )
+
+    op.add_column('student',
+        Column('user_id', sa.Integer(), ForeignKey('user.id'))
+    )
+    
+    op.add_column('user',
+        Column('role_id', sa.Integer(), ForeignKey('role.id'))
+    )
+
     op.create_index(op.f('ix_user_email'), 'user', ['email'], unique=True)
     # ### end Alembic commands ###
 
