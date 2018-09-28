@@ -5,7 +5,7 @@ import sqlalchemy
 @app.cli.command()
 def seed_data():
   try:
-    if not User.query.all():
+    if User.query.all() is None or not User.query.all():
       user = User(
         f_name="Derek",
         l_name="Hawkins",
@@ -16,7 +16,7 @@ def seed_data():
       user.set_password(user.password_hash)
       db.session.add(user)
     
-    if not Role.query.all():
+    if Role.query.all() is None or not Role.query.all():
       db.session.add_all([Role(name=i) for i in ["Super User", "Administrator", "Student"]])
     
     db.create_all()
