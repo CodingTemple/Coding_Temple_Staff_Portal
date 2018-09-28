@@ -19,4 +19,7 @@ from app.blueprints.account import account
 app.register_blueprint(account, url_prefix='/account')
 from app import routes, models, errors
 
+from app.blueprints.notes import notes
+app.register_blueprint(notes, url_prefix='/notes')
+
 

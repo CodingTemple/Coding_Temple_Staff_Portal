@@ -3,13 +3,13 @@
 {% block title %}{{ title }} | {{ super() }}{% endblock %}
 
 {% block app_content %}
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{url_for('index')}}">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Manage Users And Roles</li>
-        </ol>
-    </nav>
-    <div class="row">
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{url_for('index')}}">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Manage Users And Roles</li>
+    </ol>
+</nav>
+<div class="row">
     <div class="col-12 col-md-6">
         <div class="card">
             <div class="card-body">
@@ -17,7 +17,7 @@
                 <p class="card-text">Add, remove, or update users</p>
                 <a href="{{ url_for('admin.users') }}" class="btn btn-primary">Manage Users</a>
             </div>
-            </div>
+        </div>
     </div>
     <div class="col-12 col-md-6">
         <div class="card">
@@ -26,7 +26,7 @@
                 <p class="card-text">Add, remove, or update roles</p>
                 <a href="{{ url_for('admin.roles') }}" class="btn btn-primary">Manage Roles</a>
             </div>
-            </div> 
+        </div>
     </div>
     <div class="col-12 col-md-6">
         <div class="card">
@@ -43,5 +43,3 @@
 {% block scripts %}
 {{ super() }}
 {% endblock %}
-
-
