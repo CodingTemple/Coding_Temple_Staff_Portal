@@ -1,7 +1,7 @@
 from flask import abort, Blueprint, current_app, flash, redirect, request, render_template,request, url_for
 from flask_login import current_user, login_required
-from app.blueprints.admin.forms import AdminForm, RoleForm
-from app.models import User, Role, db
+from app.blueprints.admin.forms import AdminForm, RoleForm, NoteForm, CourseForm
+from app.models import User, Role, db, Note, Course, Student, Instructor, Semester
 
 admin = Blueprint('admin', __name__, template_folder='templates', static_folder='static')
 
@@ -125,10 +125,10 @@ def usersedit():
         flash('Updated user ' + uid, 'success') 
         return redirect(url_for('.users'))
     flash('Could not update user.', 'danger')
-  form.f_name.data = user.f_name
-  form.l_name.data = user.l_name
-  form.role.data = user.role_id
-  form.email.data = user.email
+  # form.f_name.data = user.f_name
+  # form.l_name.data = user.l_name
+  # form.role.data = user.role_id
+  # form.email.data = user.email
   context = {
     'id': user.id,
     'email': user.email,
@@ -167,6 +167,14 @@ def usersadd():
       new_user.set_password(form.email.data)
       db.session.add(new_user)
       db.session.commit()
+      if new_user.role_id==3:
+        new_student = Student(f_name=new_user.f_name, l_name=new_user.l_name, user_id=User.query.filter(User.email == new_user.email).first().id)
+        db.session.add(new_student)
+        db.session.commit()
+      if new_user.role_id==4:
+        new_instructor = Instructor(f_name=new_user.f_name, l_name=new_user.l_name, user_id=User.query.filter(User.email == new_user.email).first().id)
+        db.session.add(new_instructor)
+        db.session.commit()
       flash('New user created.', 'success')
       return redirect(url_for('.users'))
     else:
@@ -179,3 +187,75 @@ def usersadd():
       'title': 'Admin'
     }
     return render_template('admin/usersadd.html', **context)
+
+@login_required
+@admin.route('/course', methods=['GET', 'POST'])
+def course():
+  form = NoteForm()
+  if form.validate_on_submit():
+    note = Note(date=str(form.date.data) + ' ' + str(form.time.data), note=form.note.data, in_class=form.in_class.data)
+    db.session.add(note)
+    db.session.commit()
+    flash('Note added')
+    return redirect(url_for('index'))
+
+
+  context = {
+    'form': form,
+    'title': 'Course',
+    'notes': Note.query.order_by('date DESC').all()
+  }
+  return render_template('admin/course.html', **context)
+
+
+@login_required
+@admin.route('/courses', methods=['GET'])
+def courses():
+  if not current_user.is_authenticated or not current_user.role.name == 'Super User':
+    abort(401)
+  form = CourseForm()
+  context = {
+      'form': form,
+      'courses': Course.query.order_by('start_date').all(),
+      'title': 'Courses',
+      'description': 'Manage Users and Roles',
+      'Instructor': Instructor
+  }
+  return render_template('admin/courses.html', **context)
+
+
+@login_required
+@admin.route('/courses/add', methods=['GET', 'POST'])
+def coursesadd():
+  if not current_user.is_authenticated or not current_user.role.name == 'Super User':
+    abort(401)
+  form = CourseForm()
+  if request.method == 'POST':
+    if form.validate_on_submit():
+      course = Course(name=form.name.data, start_date=form.start_date.data, end_date=form.end_date.data, weeks=form.weeks.data, instructor_id=form.instructor.data, semester_id=form.semester.data)
+      db.session.add(course)
+      db.session.commit()
+      flash('Course Added', 'Success')
+      return redirect(url_for('.courses'))
+    else:
+      flash('Choose a different role name', 'danger')
+  context = {
+      'form': form
+  }
+  return render_template('admin/coursesadd.html', **context)
+
+
+@login_required
+@admin.route('/courses/delete', methods=['POST'])
+def coursesdelete():
+  if not current_user.is_authenticated or not current_user.role.name == 'Super User':
+    abort(401)
+  co_id = request.form['id']
+  course = Course.query.filter(Course.id == co_id).first()
+  if course is not None:
+    db.session.delete(course)
+    db.session.commit()
+    flash('Deleted course ' + course.name, 'success', 'success')
+  else:
+    flash('Cannot delete this course', 'danger')
+  return redirect(url_for('.courses'))

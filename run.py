@@ -1,5 +1,5 @@
 from app import app
-from app.models import db, User, Course, Role, Student, Semester, Assignment
+from app.models import db, User, Course, Role, Student, Semester, Assignment, Note
 
 from seed import seed_data
 
@@ -12,5 +12,6 @@ def make_shell_context():
     'Role': Role,
     'Student': Student,
     'Semester': Semester,
-    'Assignment': Assignment
+    'Assignment': Assignment,
+    'Note': Note
     }

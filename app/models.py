@@ -12,9 +12,9 @@ class User(UserMixin, db.Model):
   id = db.Column(db.Integer, primary_key=True)
   f_name = db.Column(db.String)
   l_name = db.Column(db.String)
-  image = db.Column(db.String, default='http://placehold.it/400x400&text=Image')
+  image = db.Column(db.String, default='http://placehold.it/400x900&text=Image')
   email = db.Column(db.String, index=True, unique=True)
-  bio = db.Column(db.String)
+  bio = db.Column(db.String, default = 'Enter a bio')
   password_hash = db.Column(db.String)
   role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
   role = db.relationship('Role', backref='role')
@@ -42,9 +42,10 @@ class Role(db.Model):
 
 class Instructor(db.Model):
   id = db.Column(db.Integer, primary_key=True)
-  name = db.Column(db.String)
-  course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
-
+  user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+  f_name = db.Column(db.String)
+  l_name = db.Column(db.String)
+  course_id = db.Column(db.Integer, db.ForeignKey('course.id'))\
 
 class Course(db.Model):
   id = db.Column(db.Integer, primary_key=True)
@@ -59,10 +60,20 @@ class Course(db.Model):
   def __repr__(self):
     return f"<Course: {self.name}>"
 
+class Note(db.Model):
+  id = db.Column(db.Integer, primary_key=True)
+  date = db.Column(db.DateTime)
+  note = db.Column(db.String)
+  in_class = db.Column(db.Boolean)
+  course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
+  instructor_id = db.Column(db.Integer, db.ForeignKey('instructor.id'))
+
 
 class Student(db.Model):
   id = db.Column(db.Integer, primary_key=True)
-  name = db.Column(db.String)
+  user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+  f_name = db.Column(db.String)
+  l_name = db.Column(db.String)
   course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
   days_missed = db.Column(db.Integer)
   assignments = db.relationship('Assignment', backref='assignment', lazy='dynamic')

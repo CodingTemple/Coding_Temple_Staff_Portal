@@ -10,7 +10,7 @@
         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Admin</a>
         <div class="dropdown-menu">
           <a class="dropdown-item" href="{{ url_for('admin.index') }}"><span class="oi oi-plus"></span> Create New User</a>
-          <a class="dropdown-item" href=""><span class="oi oi-plus"></span> Create New Class</a>
+          <a class="dropdown-item" href="{{ url_for('admin.courses') }}"><span class="oi oi-plus"></span> Create New Class</a>
         </div>
       </li>
       {% endif %}

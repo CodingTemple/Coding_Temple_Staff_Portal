@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ title }} | {{ super() }}{% endblock %}
+
+{% block app_content %}
+    
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{url_for('index')}}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url_for('admin.index')}}">Manage Users And Roles</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Manage Users</li>
+        </ol>
+    </nav>
+    <table class="table table-borderless">
+        <tbody>
+            <tr>
+                <td>Course Name</td>
+                <td>Instructor</td>
+                <td>Weeks</td>
+                <td>Start Date</td>
+            </tr>
+            {% for course in courses %}
+                <tr>
+                    <td>{{course.name}}</td>
+                    <td>{{ Instructor.query.get(course.instructor_id).f_name }}</td>
+                    <td>{{course.weeks}}</td>
+                    <td> {{ course.start_date.date() }} </td>
+                    <td><a href="" class="btn btn-secondary">Edit</a></td>
+                    <td><form action="{{url_for('admin.coursesdelete')}}" method="POST">
+                        <input type="hidden" value="{{course.id}}" name="id" />
+                        <input type="submit" class="btn btn-danger" value="Delete" />
+                    </form></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{url_for('admin.coursesadd')}}" class="btn btn-secondary">Add Course</a>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{% endblock %}
+
+
