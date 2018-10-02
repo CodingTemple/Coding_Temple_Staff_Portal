@@ -17,7 +17,7 @@
                 <tr>
                     <td>{{user.f_name}}</td>
                     <td>{{user.l_name}}</td>
-                    <td>{{user.role.name}}</td>
+                    <td>{{user.roles.all()}}</td>
                     <td>{{user.email}}</td>
                     <td><a {% if user.id != current_user.id  %}href="{{url_for('admin.usersedit')}}?id={{user.id}}"{% endif%} class="btn btn-secondary">Edit</a></td>
                     <td>
