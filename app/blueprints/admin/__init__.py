@@ -1,7 +1,7 @@
 from flask import abort, Blueprint, current_app, flash, redirect, request, render_template,request, url_for
 from flask_login import current_user, login_required
-from app.blueprints.admin.forms import AdminForm, RoleForm, NoteForm, CourseForm
-from app.models import User, Role, db, Note, Course, Student, Instructor, Semester
+from app.blueprints.admin.forms import AdminForm, RoleForm, NoteForm
+from app.models import User, Role, db, Note, Student, Instructor, Semester
 
 admin = Blueprint('admin', __name__, template_folder='templates', static_folder='static')
 
