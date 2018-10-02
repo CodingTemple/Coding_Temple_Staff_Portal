@@ -1,7 +1,7 @@
 from flask import abort, Blueprint, current_app, flash, redirect, request, render_template,request, url_for
 from flask_login import current_user, login_required
 from app.blueprints.admin.forms import AdminForm, RoleForm, NoteForm
-from app.models import User, Role, db, Note, Student, Instructor, Semester
+from app.models import User, Role, db, Note
 
 admin = Blueprint('admin', __name__, template_folder='templates', static_folder='static')
 
@@ -125,10 +125,10 @@ def usersedit():
         flash('Updated user ' + uid, 'success') 
         return redirect(url_for('.users'))
     flash('Could not update user.', 'danger')
-  # form.f_name.data = user.f_name
-  # form.l_name.data = user.l_name
-  # form.role.data = user.role_id
-  # form.email.data = user.email
+  form.f_name.data = user.f_name
+  form.l_name.data = user.l_name
+  form.role.data = user.role_id
+  form.email.data = user.email
   context = {
     'id': user.id,
     'email': user.email,
