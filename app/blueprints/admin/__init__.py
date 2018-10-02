@@ -1,14 +1,14 @@
 from flask import abort, Blueprint, current_app, flash, redirect, request, render_template,request, url_for
 from flask_login import current_user, login_required
 from app.blueprints.admin.forms import AdminForm, RoleForm, NoteForm
-from app.models import User, Role, db, Note, Student, Instructor, Semester
+from app.models import User, Role, db, Note
 
 admin = Blueprint('admin', __name__, template_folder='templates', static_folder='static')
 
 @login_required
 @admin.route('/', methods=['GET'])
 def index():
-  if not current_user.is_authenticated or not current_user.role.name == 'Super User':
+  if not current_user.is_authenticated or not current_user.roles.filter_by(name = "Super User").all() :
     abort(401)
   context = {
     'title': 'User Administration',
@@ -19,7 +19,7 @@ def index():
 @login_required
 @admin.route('/roles', methods=['GET'])
 def roles():
-  if not current_user.is_authenticated or not current_user.role.name == 'Super User':
+  if not current_user.is_authenticated or not current_user.roles.filter_by(name = "Super User").all():
     abort(401)
   context = {
     'roles': Role.query.all(),
@@ -31,7 +31,7 @@ def roles():
 @login_required
 @admin.route('/roles/add', methods=['GET', 'POST'])
 def rolesadd():
-  if not current_user.is_authenticated or not current_user.role.name == 'Super User':
+  if not current_user.is_authenticated or not current_user.roles.filter_by(name = "Super User").all():
     abort(401)
   form = RoleForm()
   if request.method == 'POST':
@@ -51,7 +51,7 @@ def rolesadd():
 @login_required
 @admin.route('/roles/edit', methods=['GET', 'POST'])
 def rolesedit():
-  if not current_user.is_authenticated or not current_user.role.name == 'Super User':
+  if not current_user.is_authenticated or not current_user.roles.filter_by(name = "Super User").all():
     abort(401)
   form = RoleForm()
   rid = request.args.get('id') or form.rid.data
@@ -77,7 +77,7 @@ def rolesedit():
 @login_required
 @admin.route('/roles/delete', methods=['POST'])
 def rolesdelete():
-  if not current_user.is_authenticated or not current_user.role.name == 'Super User':
+  if not current_user.is_authenticated or not current_user.roles.filter_by(name = "Super User").all():
     abort(401)
   rid = request.form['id']
   userCount = User.query.filter(User.role_id == rid).count()
@@ -94,7 +94,7 @@ def rolesdelete():
 @login_required
 @admin.route('/users', methods=['GET'])
 def users():
-  if not current_user.is_authenticated or not current_user.role.name == 'Super User':
+  if not current_user.is_authenticated or not current_user.roles.filter_by(name = "Super User").all():
     abort(401)
   rid = request.args.get('role')
   if rid is not None:
@@ -109,7 +109,7 @@ def users():
 @login_required
 @admin.route('/users/edit', methods=['GET', 'POST'])
 def usersedit():
-  if not current_user.is_authenticated or not current_user.role.name == 'Super User':
+  if not current_user.is_authenticated or not current_user.roles.filter_by(name = "Super User").all():
     abort(401)
   form = AdminForm()
   uid = request.args.get('id') or request.form['uid'] 
@@ -125,10 +125,10 @@ def usersedit():
         flash('Updated user ' + uid, 'success') 
         return redirect(url_for('.users'))
     flash('Could not update user.', 'danger')
-  # form.f_name.data = user.f_name
-  # form.l_name.data = user.l_name
-  # form.role.data = user.role_id
-  # form.email.data = user.email
+  form.f_name.data = user.f_name
+  form.l_name.data = user.l_name
+  form.role.data = user.role_id
+  form.email.data = user.email
   context = {
     'id': user.id,
     'email': user.email,
@@ -141,7 +141,7 @@ def usersedit():
 @login_required
 @admin.route('/users/delete', methods=['POST'])
 def usersdelete():
-  if not current_user.is_authenticated or not current_user.role.name == 'Super User':
+  if not current_user.is_authenticated or not current_user.roles.filter_by(name = "Super User").all():
     abort(401)
   uid = request.form['id']
   cuid = current_user.id
@@ -158,7 +158,7 @@ def usersdelete():
 @login_required
 @admin.route('/users/add', methods=['GET', 'POST'])
 def usersadd():
-  if not current_user.is_authenticated or not current_user.role.name == 'Super User':
+  if not current_user.is_authenticated or not current_user.roles.filter_by(name = "Super User").all():
     abort(401)
   form = AdminForm()
   if request.method == 'POST':
