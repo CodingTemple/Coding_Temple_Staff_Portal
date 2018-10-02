@@ -21,8 +21,6 @@ def seed_data():
       db.session.add(user)
       db.session.commit()
     
-
-    
     if not Role.query.filter_by(name="Super User").first().users.all():
       user_id = User.query.filter_by(email = "derek@codingtemple.com").first().id
       role_id = Role.query.filter_by(name = "Super User").first().id
