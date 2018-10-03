@@ -15,7 +15,7 @@ def seed_data():
         f_name="Derek",
         l_name="Hawkins",
         email="derek@codingtemple.com",
-        password_hash=app.config['SUPER_USER_PASSWORDS'][0],
+        password_hash=app.config['SUPER_USER_PASSWORD'],
       )
       user.set_password(user.password_hash)
       db.session.add(user)
