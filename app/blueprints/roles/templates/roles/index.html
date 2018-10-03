@@ -7,7 +7,6 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{url_for('index')}}">Home</a></li>
-            <li class="breadcrumb-item"><a href="{{url_for('admin.index')}}">Manage Users And Roles</a></li>
             <li class="breadcrumb-item active" aria-current="page">Manage Roles</li>
         </ol>
     </nav>
@@ -16,10 +15,10 @@
             {% for role in roles %}
                 <tr>
                     <th>{{role.name}}</th>
-                    <td><a href="{{url_for('admin.users')}}?role={{role.id}}" class="btn btn-secondary">View Users</a></td>
-                    <td><a href="{{url_for('admin.rolesedit')}}?id={{role.id}}" class="btn btn-secondary">Edit</a></td>
+                    <td><a href="{{url_for('users.index')}}?role={{role.id}}" class="btn btn-secondary">View Users</a></td>
+                    <td><a href="{{url_for('roles.edit')}}?id={{role.id}}" class="btn btn-secondary">Edit</a></td>
                     <td>
-                        <form action="{{url_for('admin.rolesdelete')}}" method="POST">
+                        <form action="{{url_for('roles.delete')}}" method="POST">
                             <input type="hidden" value="{{role.id}}" name="id" />
                             <input type="submit" class="btn btn-danger" value="Delete" />
                         </form>
@@ -28,7 +27,7 @@
             {% endfor %}
         </tbody>
     </table>
-    <a href="{{url_for('admin.rolesadd')}}" class="btn btn-secondary">Add Role</a>
+    <a href="{{url_for('roles.add')}}" class="btn btn-secondary">Add Role</a>
 
 {% endblock %}
 

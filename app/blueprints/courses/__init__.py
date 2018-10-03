@@ -3,11 +3,13 @@ from flask_login import current_user, login_required
 from app.blueprints.courses.forms import CourseForm
 from app.models import Course
 
+from app.decorators import authorize
+
 courses = Blueprint('courses', __name__, template_folder='templates', static_folder='static')
 
-
-@login_required
 @courses.route('/details', methods=['GET', 'POST'])
+@login_required
+@authorize
 def details():
   form = CourseForm()
   if form.validate_on_submit():
@@ -26,11 +28,10 @@ def details():
   return render_template('courses/details.html', **context)
 
 
-@login_required
 @courses.route('/', methods=['GET'])
+@login_required
+@authorize
 def index():
-  if not current_user.is_authenticated or not current_user.role.name == 'Super User':
-    abort(401)
   form = CourseForm()
   context = {
       'form': form,
@@ -40,11 +41,10 @@ def index():
   return render_template('courses/index.html', **context)
 
 
-@login_required
 @courses.route('/add', methods=['GET', 'POST'])
+@login_required
+@authorize
 def add():
-  if not current_user.is_authenticated or not current_user.role.name == 'Super User':
-    abort(401)
   form = CourseForm()
   if request.method == 'POST':
     if form.validate_on_submit():
@@ -60,14 +60,12 @@ def add():
   }
   return render_template('courses/add.html', **context)
 
-
-@login_required
 @courses.route('/delete', methods=['POST'])
+@login_required
+@authorize
 def delete():
-  if not current_user.is_authenticated or not current_user.role.name == 'Super User':
-    abort(401)
   co_id = request.form['id']
-  course = Course.query.filter(Course.id == co_id).first()
+  course = Course.query.get(co_id)
   if course is not None:
     db.session.delete(course)
     db.session.commit()

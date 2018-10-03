@@ -22,10 +22,9 @@ def seed_data():
       db.session.commit()
     
     if not Role.query.filter_by(name="Super User").first().users.all():
-      user_id = User.query.filter_by(email = "derek@codingtemple.com").first().id
-      role_id = Role.query.filter_by(name = "Super User").first().id
-      statement = userRole.insert().values(user_id=user_id, role_id=role_id)
-      db.session.execute(statement)
+      user = User.query.filter_by(email = "derek@codingtemple.com").first()
+      role = Role.query.filter_by(name = "Super User").first()
+      user.roles.append(role)
       db.session.commit()
     
   except sqlalchemy.exc.SQLAlchemyError:

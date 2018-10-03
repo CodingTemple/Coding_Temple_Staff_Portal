@@ -7,12 +7,11 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{url_for('index')}}">Home</a></li>
-            <li class="breadcrumb-item"><a href="{{url_for('admin.index')}}">Manage Users And Roles</a></li>
-            <li class="breadcrumb-item"><a href="{{url_for('admin.roles')}}">Manage Roles</a></li>
+            <li class="breadcrumb-item"><a href="{{url_for('roles.index')}}">Manage Roles</a></li>
             <li class="breadcrumb-item active" aria-current="page">Edit Role</li>
         </ol>
     </nav>
-    <form action="{{ url_for('admin.rolesedit') }}" method="POST" role="form">
+    <form action="{{ url_for('roles.edit') }}" method="POST" role="form">
         {{ form.hidden_tag() }}
         <div class="form-group">
             {{ form.name.label }}

@@ -13,10 +13,3 @@ def index():
   # if current_user.is_authenticated:
   #   print(current_user.role.name)
   return render_template('index.html', **context)
-
-@app.route('/notes')
-def notes():
-  context = {
-
-  }
-  return render_template('notes.html', **context)
