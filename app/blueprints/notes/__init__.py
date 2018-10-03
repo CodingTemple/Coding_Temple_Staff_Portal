@@ -12,5 +12,6 @@ notes = Blueprint('notes', __name__, template_folder='templates', static_folder=
 @authorize
 def index():
   context = {
+      "form": NoteForm()
   }
   return render_template('notes/index.html', **context)

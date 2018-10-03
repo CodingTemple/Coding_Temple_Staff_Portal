@@ -1,14 +1,12 @@
 <div id="sidebar-1">
   <ul class="nav nav-pills flex-column">
-      <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}"><span class="oi oi-home"></span> Home</a></li>
+      <li class="nav-item"><a class="{% if url_for('index')|string == request.url_rule|string  %}nav-link active{% else %}nav-link{% endif%}" href="{{ url_for('index') }}"><span class="oi oi-home"></span> <span class="d-none d-md-inline">Home</span></a></li>
       {% if current_user.is_authenticated and current_user.roles.filter_by(name = "Super User").all() %}      
-      <li class="nav-item"><a class="nav-link" href="{{ url_for('users.index') }}"><span class="oi oi-people"></span> Users</a></li>
-      <li class="nav-item"><a class="nav-link" href="{{ url_for('roles.index') }}"><span class="oi oi-terminal"></span> Roles</a></li>
-      <li class="nav-item"><a class="nav-link" href="{{ url_for('courses.index') }}"><span class="oi oi-calendar"></span> Courses</a></li>
-      <li class="nav-item"><a class="nav-link" href="#"><span class="oi oi-book"></span> Assignments</a></li>
-      <li class="nav-item"><a class="nav-link" href="{{ url_for('notes.index') }}"><span class="oi oi-check"></span> Attendance & Notes</a></li>
+      <li class="nav-item"><a class="{% if url_for('users.index')|string in request.url_rule|string  %}nav-link active{% else %}nav-link{% endif%}" href="{{ url_for('users.index') }}"><span class="oi oi-people"></span> <span class="d-none d-md-inline">Users</span></a></li>
+      <li class="nav-item"><a class="{% if url_for('roles.index')|string in request.url_rule|string  %}nav-link active{% else %}nav-link{% endif%}" href="{{ url_for('roles.index') }}"><span class="oi oi-terminal"></span> <span class="d-none d-md-inline">Roles</span></a></li>
+      <li class="nav-item"><a class="{% if url_for('courses.index')|string in request.url_rule|string  %}nav-link active{% else %}nav-link{% endif%}" href="{{ url_for('courses.index') }}"><span class="oi oi-calendar"></span> <span class="d-none d-md-inline">Courses</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#"><span class="oi oi-book"></span> <span class="d-none d-md-inline">Assignments</span></a></li>
+      <li class="nav-item"><a class="{% if url_for('notes.index')|string in request.url_rule|string  %}nav-link active{% else %}nav-link{% endif%}" href="{{ url_for('notes.index') }}"><span class="oi oi-check"></span><span class="d-none d-md-inline">Notes</span></a></li>
       {% endif %}
-
-    
   </ul>
 </div>
