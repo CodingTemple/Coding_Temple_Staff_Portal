@@ -59,8 +59,8 @@ def logout():
   return redirect(url_for('account.login'))
 
 @login_required
-@account.route('/profile', methods=['GET', 'POST'])
-def profile():
+@account.route('/', methods=['GET', 'POST'])
+def index():
   form = ProfileForm()
   if not current_user.is_authenticated:
     return redirect(url_for('index'))
@@ -81,10 +81,10 @@ def profile():
     db.session.commit()
     print("data commited")
     flash('Profile edited successfully', 'success')
-    return redirect(url_for('account.profile'))
+    return redirect(url_for('account.index'))
   context = {
     'title': 'Profile',
     'description': 'Profile',
     'form': form,
   }
-  return render_template('account/profile.html', **context)
+  return render_template('account/index.html', **context)

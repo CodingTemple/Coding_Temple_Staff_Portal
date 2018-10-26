@@ -5,8 +5,9 @@
 {% block app_content %}
   <h1>{{ description }}</h1>
   <hr>
-  <form action="{{ url_for('admin.usersadd') }}" class="form-horizontal" method="POST" role="form">
+  <form action="{{ url_for('users.edit') }}" class="form-horizontal" method="POST" role="form">
     {{ form.hidden_tag() }}
+    <input type="hidden" name="uid" value="{{id}}" />
     <div class="form-row">
       <div class="form-group col-md-6">
         {{ form.f_name.label }}
@@ -19,7 +20,8 @@
     </div>
     <div class="form-group">
       {{ form.email.label }}
-      {{ form.email(class='form-control') }}
+      <input type="hidden" value="no@no.com" name="email" />
+      <input type="email" value="{{email}}" name="email" disabled class="form-control">
     </div>
     <div class="form-group">
       {{ form.role.label }}
@@ -31,9 +33,4 @@
 
 {% block scripts %}
 {{ super() }}
-<script>
-  $('form').on('submit', e => {
-    console.log(typeof parseInt($('select[name="role"]').val()));
-  })
-</script>
 {% endblock %}

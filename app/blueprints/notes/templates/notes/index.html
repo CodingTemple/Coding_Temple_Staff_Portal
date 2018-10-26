@@ -1,14 +1,39 @@
 {% extends 'layout.html' %}
 
-{% block title %}{{ title }} | {{ super() }} {% endblock %}
+{% block title %}{{ title }} | {{ super() }}{% endblock %}
 
 {% block app_content %}
-<div class="row">
-  <div class="col-12 col-md-6">
-    <h1>Notes</h1>
-    {% for note in notes %}  
-    <p>{{ note }}</p>
-    {% endfor %}
-  </div>
-</div>
+<h4>Add a note</h4>
+<form action="" method="POST" role="form">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.date.label }}
+        {{ form.date(class='form-control input-append date time', type='date') }}
+    </div>
+    {# <div class="form-group">
+        {{ form.time.label }}
+        {{ form.time(class='form-control', type='time') }}
+    </div> #}
+    <div class="form-group">
+        {{ form.note.label }}
+        {{ form.note(class='form-control') }}
+    </div>
+    <div class="form-check">
+        {{ form.in_class(class='form-check-input') }}
+        {{ form.in_class.label(class='form-check-label') }}
+    </div>
+    <div class="form-group">
+        {{ form.user.label }}
+        {{ form.user(class='form-control') }}
+    </div>
+    <div class="form-group">
+        {{ form.course.label }}
+        {{ form.course(class='form-control') }}
+    </div>
+    {{ form.submitnote(class='btn btn-primary') }}
+</form>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
 {% endblock %}

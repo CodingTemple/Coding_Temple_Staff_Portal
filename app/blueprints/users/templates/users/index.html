@@ -7,21 +7,20 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{url_for('index')}}">Home</a></li>
-            <li class="breadcrumb-item"><a href="{{url_for('admin.index')}}">Manage Users And Roles</a></li>
             <li class="breadcrumb-item active" aria-current="page">Manage Users</li>
         </ol>
     </nav>
-    <table class="table table-borderless">
+    <table class="table table-responsive">
         <tbody>
             {% for user in users %}
                 <tr>
                     <td>{{user.f_name}}</td>
                     <td>{{user.l_name}}</td>
-                    <td>{{user.role.name}}</td>
+                    <td>{{user.roles.all()|map(attribute='name')|join(', ')}}</td>
                     <td>{{user.email}}</td>
-                    <td><a href="{{url_for('admin.usersedit')}}?id={{user.id}}" class="btn btn-secondary">Edit</a></td>
+                    <td><a {% if user.id != current_user.id  %}href="{{url_for('users.edit')}}?id={{user.id}}"{% endif%} class="btn btn-secondary">Edit</a></td>
                     <td>
-                        <form action="{{url_for('admin.usersdelete')}}" method="POST">
+                        <form action="{{url_for('users.delete')}}" method="POST">
                             <input type="hidden" value="{{user.id}}" name="id" />
                             <input type="submit" class="btn btn-danger" value="Delete" {% if user.id == current_user.id  %}disabled{% endif%} />
                         </form>
@@ -30,7 +29,7 @@
             {% endfor %}
         </tbody>
     </table>
-    <a href="{{url_for('admin.usersadd')}}" class="btn btn-secondary">Add User</a>
+    <a href="{{url_for('users.add')}}" class="btn btn-secondary">Add User</a>
 
 {% endblock %}
 
