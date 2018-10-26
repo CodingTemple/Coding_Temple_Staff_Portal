@@ -7,6 +7,9 @@ from flask_login import LoginManager
 login = LoginManager()
 login.init_app(app)
 
+from flask_moment import Moment
+moment = Moment(app)
+
 from app.models import db
 db.init_app(app)
 from flask_migrate import Migrate

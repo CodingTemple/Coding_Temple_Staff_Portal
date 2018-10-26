@@ -20,8 +20,8 @@
             {% for course in courses %}
                 <tr>
                     <td>{{course.name}}</td>
-                    <td>{{ course.start_date.date() }}</td>
-                    <td>{{ course.end_date.date() }}</td>
+                    <td>{{ moment(course.start_date).format('LL') }}</td>
+                    <td>{{ moment(course.end_date).format('LL') }}</td>
                     <td><a href="{{url_for('courses.edit')}}?id={{course.id}}" class="btn btn-secondary">Edit</a></td>
                     <td><form action="{{url_for('courses.delete')}}" method="POST">
                         <input type="hidden" value="{{course.id}}" name="id" />
