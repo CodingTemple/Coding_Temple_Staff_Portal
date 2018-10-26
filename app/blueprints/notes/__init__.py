@@ -13,6 +13,7 @@ notes = Blueprint('notes', __name__, template_folder='templates', static_folder=
 def index():
   context = {
     'title': 'Notes',
-    'notes': Note.query.all()
+    'notes': Note.query.all(),
+    'form': NoteForm()
   }
   return render_template('/notes/index.html', **context)
