@@ -6,7 +6,8 @@ load_dotenv(os.path.join(basedir, '.env'))
 
 class Config:
   SECRET_KEY = os.urandom(24)
-  SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(basedir, 'app.db')
+  #SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(basedir, 'app.db')
+  SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
   SQLALCHEMY_TRACK_MODIFICATIONS = False
   SUPER_USER_PASSWORD = os.getenv('SUPER_USER_PASSWORD') or 'password'
   PROFILE_PICS_FOLDER = os.path.join(basedir, 'app/blueprints/account/static/uploads')

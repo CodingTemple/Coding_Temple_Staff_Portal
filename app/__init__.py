@@ -32,6 +32,9 @@ app.register_blueprint(notes, url_prefix='/notes')
 
 from app import routes, models, errors
 
+from app.blueprints.notes import notes
+app.register_blueprint(notes, url_prefix='/notes')
+
 
 
 
