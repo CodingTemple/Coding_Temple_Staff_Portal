@@ -86,4 +86,4 @@ class UserAssignment(db.Model):
 @login.user_loader
 def load_user(id):
   ''' Gets the user by their user ID'''
-  return User.query.get(int(id))
+  return User.query.join(UserRole).join(Role).filter(User.id==int(id)).one()
