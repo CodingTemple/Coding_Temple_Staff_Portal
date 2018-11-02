@@ -66,7 +66,7 @@ $Env:FLASK_ENV = "development"
 
 ```Shell
 pip install -r requirements.txt
-```
+```python
 
 - [ ] Run the app
 
@@ -93,6 +93,10 @@ flask db upgrade
 ## Seed User
 
 ```Shell
-$Env:SU_1 = "password"
-flask seed_data
+flask add_user <email> <password> <firstname> <lastname>
+
+flask add_role <role>
+
+flask add_user_role <email> <role>
+
 ```

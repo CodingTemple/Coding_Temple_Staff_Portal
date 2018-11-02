@@ -48,7 +48,7 @@ class Assignment(db.Model):
   due_date = db.Column(db.DateTime, index=True)
   date_submitted = db.Column(db.DateTime, index=True, default=datetime.utcnow())
   course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
-  course = db.relationship('Course', backref='assignments', lazy='dynamic')
+  course = db.relationship('Course', backref='assignments', lazy='subquery')
 
 class Note(db.Model):
   id = db.Column(db.Integer, primary_key=True)
@@ -56,7 +56,7 @@ class Note(db.Model):
   note = db.Column(db.String)
   in_class = db.Column(db.Boolean)
   user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-  user = db.relationship('User', backref='notes', lazy='dynamic')
+  user = db.relationship('User', backref='notes', lazy='subquery')
 
   def __repr__(self):
     return f"<Note: {self.date}, {self.note}, {self.in_class}>"
@@ -64,24 +64,24 @@ class Note(db.Model):
 class UserRole(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'), primary_key=True)
-    user = db.relationship('User', lazy='dynamic', backref=db.backref('user_roles', lazy='dynamic'))
-    role = db.relationship('Role', lazy='dynamic', backref=db.backref('user_roles', lazy='dynamic'))
+    user = db.relationship('User', lazy='subquery', backref=db.backref('user_roles', lazy='dynamic'))
+    role = db.relationship('Role', lazy='subquery', backref=db.backref('user_roles', lazy='dynamic'))
 
 class UserCourse(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     course_id = db.Column(db.Integer, db.ForeignKey('course.id'), primary_key=True)
     completion_date = db.Column(db.DateTime)
     withdrawl_date = db.Column(db.DateTime)
-    user = db.relationship('User', lazy='dynamic', backref=db.backref('user_courses', lazy='dynamic'))
-    course = db.relationship('Course', lazy='dynamic', backref=db.backref('user_courses', lazy='dynamic'))
+    user = db.relationship('User', lazy='subquery', backref=db.backref('user_courses', lazy='dynamic'))
+    course = db.relationship('Course', lazy='subquery', backref=db.backref('user_courses', lazy='dynamic'))
 
 class UserAssignment(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     assignment_id = db.Column(db.Integer, db.ForeignKey('assignment.id'), primary_key=True)
     completed_date = db.Column(db.DateTime)
     note = db.Column(db.String)
-    user = db.relationship('User', lazy='dynamic', backref=db.backref('user_assignments', lazy='dynamic'))
-    assignment = db.relationship('Assignment', lazy='dynamic', backref=db.backref('user_assignments', lazy='dynamic'))
+    user = db.relationship('User', lazy='subquery', backref=db.backref('user_assignments', lazy='dynamic'))
+    assignment = db.relationship('Assignment', lazy='subquery', backref=db.backref('user_assignments', lazy='dynamic'))
 
 @login.user_loader
 def load_user(id):
