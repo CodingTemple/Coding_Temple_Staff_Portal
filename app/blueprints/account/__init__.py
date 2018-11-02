@@ -71,13 +71,14 @@ def index():
     user.l_name = form.last_name.data
     user.email = form.email.data
     user.bio = form.bio.data
-    if not os.path.exists(app.config['PROFILE_PICS_FOLDER']):
-      print("created folder")
-      os.makedirs(app.config['PROFILE_PICS_FOLDER'])
-    filename = str(int(time.time())) + '.png'
-    print(os.path.join(app.config['PROFILE_PICS_FOLDER'], filename))
-    form.image.data.save(os.path.join(app.config['PROFILE_PICS_FOLDER'], filename))
-    user.image = filename
+    if form.image.data :
+      if not os.path.exists(app.config['PROFILE_PICS_FOLDER']):
+        print("created folder")
+        os.makedirs(app.config['PROFILE_PICS_FOLDER'])
+      filename = str(int(time.time())) + '.png'
+      print(os.path.join(app.config['PROFILE_PICS_FOLDER'], filename))
+      form.image.data.save(os.path.join(app.config['PROFILE_PICS_FOLDER'], filename))
+      user.image = filename
     db.session.commit()
     print("data commited")
     flash('Profile edited successfully', 'success')

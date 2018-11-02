@@ -5,7 +5,7 @@ from flask_login import current_user, login_required
 def authorize(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not current_user.roles.filter_by(name = "Super User").all() :
+        if not 'Super User' in list(map(lambda x: x.role.name, current_user.user_roles.all())):
             abort(401)
         return f(*args, **kwargs)
     return decorated_function
