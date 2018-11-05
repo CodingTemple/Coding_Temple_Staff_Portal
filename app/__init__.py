@@ -30,11 +30,7 @@ app.register_blueprint(courses, url_prefix='/courses')
 from app.blueprints.notes import notes
 app.register_blueprint(notes, url_prefix='/notes')
 
+from app.blueprints.assignments import assignments
+app.register_blueprint(assignments, url_prefix='/assignments')
+
 from app import routes, models, errors
-
-from app.blueprints.notes import notes
-app.register_blueprint(notes, url_prefix='/notes')
-
-
-
-
