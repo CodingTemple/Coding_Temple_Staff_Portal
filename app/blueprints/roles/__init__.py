@@ -68,9 +68,8 @@ def edit():
 def delete():
   rid = request.form['id']
   role =  Role.query.get(rid)
-  userCount = role.users.count()
   role_name = role.name
-  if userCount > 0:
+  if role.users:
     flash('You cannot delete a role with users assigned to it', 'danger')
   else:
     db.session.delete(role)

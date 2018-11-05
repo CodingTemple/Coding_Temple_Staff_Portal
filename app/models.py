@@ -6,6 +6,11 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+userRole = db.Table('user_role', 
+  db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+  db.Column('role_id', db.Integer, db.ForeignKey('role.id'), primary_key=True)
+)
+
 class User(UserMixin, db.Model):
   id = db.Column(db.Integer, primary_key=True)
   f_name = db.Column(db.String)
@@ -14,6 +19,7 @@ class User(UserMixin, db.Model):
   email = db.Column(db.String, index=True, unique=True)
   bio = db.Column(db.String, default = 'Enter a bio')
   password_hash = db.Column(db.String)
+  roles = db.relationship('Role', secondary=userRole, lazy='subquery', backref=db.backref('users', lazy=True))
 
   def set_password(self, password):
     '''Sets the password_hash property via a built-in hash function'''
@@ -61,12 +67,6 @@ class Note(db.Model):
   def __repr__(self):
     return f"<Note: {self.date}, {self.note}, {self.in_class}>"
 
-class UserRole(db.Model):
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-    role_id = db.Column(db.Integer, db.ForeignKey('role.id'), primary_key=True)
-    user = db.relationship('User', lazy='subquery', backref=db.backref('user_roles', lazy='dynamic'))
-    role = db.relationship('Role', lazy='subquery', backref=db.backref('user_roles', lazy='dynamic'))
-
 class UserCourse(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     course_id = db.Column(db.Integer, db.ForeignKey('course.id'), primary_key=True)
@@ -86,4 +86,4 @@ class UserAssignment(db.Model):
 @login.user_loader
 def load_user(id):
   ''' Gets the user by their user ID'''
-  return User.query.join(UserRole).join(Role).filter(User.id==int(id)).one()
+  return User.query.get(int(id))

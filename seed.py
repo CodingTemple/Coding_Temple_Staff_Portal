@@ -1,5 +1,5 @@
 from app import app, db
-from app.models import User, Role, UserRole
+from app.models import User, Role
 import sqlalchemy
 
 import click
@@ -58,12 +58,8 @@ def add_user_role(email, role):
     user = User.query.filter_by(email=email).first()
     if not user:
       raise Exception('User does not exist')
-    if not UserRole.query.filter_by(user_id=user.id, role_id=role.id).first():
-      userRole = UserRole(
-        user_id = user.id,
-        role_id = role.id
-      )
-      db.session.add(userRole)
+    if role not in user.roles:
+      user.roles.append(role)
       db.session.commit()
       print('Added user to role')
     else:

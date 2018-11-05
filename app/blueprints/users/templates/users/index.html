@@ -16,7 +16,7 @@
                 <tr>
                     <td>{{user.f_name}}</td>
                     <td>{{user.l_name}}</td>
-                    <td>{{user.user_roles.all()|map(attribute='role.name')|join(', ')}}</td>
+                    <td>{{user.roles|map(attribute='name')|join(', ')}}</td>
                     <td>{{user.email}}</td>
                     <td><a {% if user.id != current_user.id  %}href="{{url_for('users.edit')}}?id={{user.id}}"{% endif%} class="btn btn-secondary">Edit</a></td>
                     <td>
