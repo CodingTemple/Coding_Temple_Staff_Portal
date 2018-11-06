@@ -46,7 +46,7 @@
                     <td>{{ moment(assignment.due_date).format('LL') }}</td>
                     <td><a href="{{url_for('assignments.edit')}}?id={{assignment.id}}" class="btn btn-secondary">Edit</a></td>
                     <td><form action="{{url_for('assignments.delete')}}" method="POST">
-                        <input type="hidden" value="{{assignments.id}}" name="id" />
+                        <input type="hidden" value="{{assignment.id}}" name="id" />
                         <input type="submit" class="btn btn-danger" value="Delete" />
                     </form></td>
                     <td>

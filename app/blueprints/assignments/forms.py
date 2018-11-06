@@ -17,3 +17,10 @@ class AssignmentForm(FlaskForm):
     def __init__(self):
         super().__init__()
         self.course.choices = [("-1", "")]+[(i.id, i.name) for i in Course.query.all()]
+
+class UserAssignmentForm(FlaskForm):
+  with app.app_context():
+    id = HiddenField('ID')
+    completed_date = DateField('Completed Date')
+    note = TextAreaField('Note')
+  
