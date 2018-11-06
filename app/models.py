@@ -75,8 +75,8 @@ class Course(TimestampMixin, db.Model):
 class Assignment(TimestampMixin, db.Model):
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String)
+  description = db.Column(db.String)
   due_date = db.Column(db.DateTime, index=True)
-  date_submitted = db.Column(db.DateTime, index=True, default=datetime.utcnow())
   course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
   course = db.relationship('Course', backref='assignments', lazy='subquery')
 

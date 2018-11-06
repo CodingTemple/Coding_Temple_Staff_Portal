@@ -1,5 +1,66 @@
-<h1>List</h1>
-<a href="{{url_for('assignments.edit')}}?id={{0}}" class="btn btn-secondary">Edit</a>
-<a href="{{url_for('assignments.add')}}" class="btn btn-secondary">Add</a>
-<a href="{{url_for('assignments.delete')}}?id={{0}}" class="btn btn-secondary">Delete</a>
+{% extends 'layout.html' %}
+
+{% block title %}{{ title }} | {{ super() }}{% endblock %}
+
+{% block app_content %}
+<nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{url_for('index')}}">Home</a></li>
+            <li class="breadcrumb-item active">Manage Assignments</li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="form-group">
+            <label>Course Filter</label>
+                <select class="form-control course-filter" onchange="window.location.href='{{url_for('assignments.index')}}?cid=' + document.querySelector('.course-filter').value">
+                    <option value="">All</option>
+                    {% for course in courses %}
+                        {% if course.id == course_id %}
+                            <option value="{{course.id}}" selected>{{course.name}}</option>
+                        {% else %}
+                            <option value="{{course.id}}">{{course.name}}</option>
+                        {% endif %}
+                    {% endfor %}
+                     </select>
+        </div>
+        
+    </div>
+    <table class="table table-borderless">
+        <thead>
+            <tr>
+                    <th>Name</th>
+                    <th>Course</th>
+                    <th>Description</th>
+                    <th>Due Date</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                    <th>Manage User Assignments</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for assignment in assignments %}
+                <tr>
+                    <td>{{assignment.name}}</td>
+                    <td><a href="{{url_for('assignments.index')}}?cid={{assignment.course_id}}">{{assignment.course.name }}</a></td>
+                    <td>{{assignment.description }}</td>
+                    <td>{{ moment(assignment.due_date).format('LL') }}</td>
+                    <td><a href="{{url_for('assignments.edit')}}?id={{assignment.id}}" class="btn btn-secondary">Edit</a></td>
+                    <td><form action="{{url_for('assignments.delete')}}" method="POST">
+                        <input type="hidden" value="{{assignments.id}}" name="id" />
+                        <input type="submit" class="btn btn-danger" value="Delete" />
+                    </form></td>
+                    <td>
+                        <a href="{{url_for('assignments.index')}}?id={{assignment.id}}" class="btn btn-secondary">User Assignments</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{url_for('assignments.add')}}" class="btn btn-secondary">Add Assignment</a>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{% endblock %}
 

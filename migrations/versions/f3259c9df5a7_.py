@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 7d3466fdf4ac
+Revision ID: f3259c9df5a7
 Revises: 
-Create Date: 2018-11-05 13:08:47.745579
+Create Date: 2018-11-06 09:09:47.808193
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '7d3466fdf4ac'
+revision = 'f3259c9df5a7'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -62,13 +62,12 @@ def upgrade():
     sa.Column('updated', sa.DateTime(), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=True),
+    sa.Column('description', sa.String(), nullable=True),
     sa.Column('due_date', sa.DateTime(), nullable=True),
-    sa.Column('date_submitted', sa.DateTime(), nullable=True),
     sa.Column('course_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['course_id'], ['course.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_assignment_date_submitted'), 'assignment', ['date_submitted'], unique=False)
     op.create_index(op.f('ix_assignment_due_date'), 'assignment', ['due_date'], unique=False)
     op.create_table('employment_history',
     sa.Column('created', sa.DateTime(), nullable=False),
@@ -134,7 +133,6 @@ def downgrade():
     op.drop_table('note')
     op.drop_table('employment_history')
     op.drop_index(op.f('ix_assignment_due_date'), table_name='assignment')
-    op.drop_index(op.f('ix_assignment_date_submitted'), table_name='assignment')
     op.drop_table('assignment')
     op.drop_index(op.f('ix_user_email'), table_name='user')
     op.drop_table('user')
