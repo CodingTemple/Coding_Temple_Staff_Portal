@@ -94,13 +94,13 @@ def delete():
 @assignments.route('/userassignments', methods=['GET'])
 @login_required
 @authorize
-def index():
+def userassignments():
   id = request.args.get('id')
-  assignment = Assignment.query.find(id)
-  users = assignment.course.users.all()
-
+  assignment = Assignment.query.get(id)
+  user_ids = [user_course.user_id for user_course in assignment.course.user_courses.all()]
+  print(user_ids)
   context = {
       'assignment': assignment,
-      'users': users
+      # 'users': users
   }
   return render_template('assignments/userassignments.html', **context)

@@ -1,4 +1,4 @@
-from flask import abort, Blueprint, current_app, flash, redirect, request, render_template,request, url_for
+from flask import abort, Blueprint, current_app, flash, redirect, request, render_template,request, url_for, jsonify
 from flask_login import current_user, login_required
 from app.blueprints.users.forms import UserForm
 from app.models import User, Role, db, Note
@@ -93,3 +93,11 @@ def add():
       'title': 'Admin'
     }
     return render_template('users/add.html', **context)
+
+@users.route('/lookup', methods=['GET'])
+@login_required
+@authorize
+def lookup():
+  s = request.args.get('s') or ''
+  users = [{'id':user.id,'fname':user.f_name, 'lname':user.l_name, 'email':user.email} for user in User.query.filter(User.email.contains(s) | User.f_name.contains(s) | User.l_name.contains(s)).all()]
+  return jsonify(users)

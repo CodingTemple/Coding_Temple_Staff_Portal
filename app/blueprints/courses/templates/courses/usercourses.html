@@ -1,0 +1,101 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ title }} | {{ super() }}{% endblock %}
+
+{% block app_content %}
+    <h1>Working</h1>
+    <div class="form-row">
+        <div class="col-2">
+            <label for="usersearch">Lookup</label>
+        </div>
+        <div class="col-8 autocomplete">
+            <input type="search" class="form-control" placeholder="first|last|email" name="usersearch" id="usersearch" onkeyup="search()" list="usersearchresults" />
+            <datalist id="usersearchresults" >
+            </datalist>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-primary" onclick="adduser()">Add User</button>
+        </div>
+        
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Completion Date</th>
+                <th>Withdrawl Date</th>
+                <th>Withdrawl Reason</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user_course in user_courses %}
+            <tr>
+                <td>
+                    {{user_course.user.f_name}}
+                </td>
+                <td>
+                    {{user_course.user.l_name}}
+                </td>
+                <td>
+                    {{user_course.completion_date}}
+                </td>
+                <td>
+                    {{user_course.withdrawl_date}}
+                </td>
+                <td>
+                    {{user_course.withdrawl_reason}}
+                </td>
+            </tr>
+            
+        {% endfor %}
+    </tbody>
+    </table>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script type="text/javascript">
+    var cid = {{course.id}};
+
+    function adduser(){
+        var u = parseInt(document.querySelector('#usersearch').value);
+        fetch('/courses/useradd', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json; charset=utf-8"
+            },
+            redirect: "follow",
+            body: JSON.stringify({uid:u, cid:cid})
+            })
+            .then(() => {
+                window.location.href = window.location.href;
+            }); // parses response to JSON
+
+    }
+
+    function search(){
+        var s = document.querySelector('#usersearch').value;
+        var r = document.querySelector('#usersearchresults');
+        fetch('/users/lookup?s=' + s)
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(myJson) {
+            r.innerHTML = "";
+            if(myJson.length > 0){
+                myJson.forEach(e => {
+                    var o = document.createElement('option');
+                    
+                    o.innerText = e.fname + ' ' + e.lname + ' (' + e.email + ')';
+                    o.value = e.id;
+                    r.appendChild(o);
+                });
+                
+            }
+        
+        });
+    }
+</script>
+{% endblock %}
+

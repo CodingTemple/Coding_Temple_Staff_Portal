@@ -1,7 +1,7 @@
 from flask import abort, Blueprint, current_app, flash, redirect, request, render_template,request, url_for
 from flask_login import current_user, login_required
 from app.blueprints.courses.forms import CourseForm
-from app.models import db, Course
+from app.models import db, Course, UserCourse
 
 from app.decorators import authorize
 
@@ -80,3 +80,30 @@ def delete():
   else:
     flash('Cannot delete this course', 'danger')
   return redirect(url_for('courses.index'))
+
+@courses.route('/usercourses', methods=['GET'])
+@login_required
+@authorize
+def usercourses():
+  id = request.args.get('id')
+  course = Course.query.get(id)
+  user_courses = course.user_courses.all()
+  print(user_courses)
+  context = {
+      'course': course,
+      'user_courses': user_courses
+  }
+  return render_template('courses/usercourses.html', **context)
+
+@courses.route('/useradd', methods=['POST'])
+@login_required
+@authorize
+def useradd():
+  uid = request.json['uid']
+  cid = request.json['cid']
+  newUserCourse = UserCourse(user_id=uid, course_id=cid)
+  db.session.add(newUserCourse)
+  db.session.commit()
+  return redirect(url_for('courses.usercourses') + "?id=" + cid)
+
+
