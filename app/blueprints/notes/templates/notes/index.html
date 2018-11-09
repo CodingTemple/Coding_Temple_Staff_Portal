@@ -3,37 +3,40 @@
 {% block title %}{{ title }} | {{ super() }}{% endblock %}
 
 {% block app_content %}
-<h4>Add a note</h4>
-<form action="" method="POST" role="form">
-    {{ form.hidden_tag() }}
-    <div class="form-group">
-        {{ form.date.label }}
-        {{ form.date(class='form-control input-append date time', type='date') }}
-    </div>
-    <div class="form-group">
-        {{ form.time.label }}
-        {{ form.time(class='form-control', type='time') }}
-    </div> 
-    <div class="form-group">
-        {{ form.note.label }}
-        {{ form.note(class='form-control') }}
-    </div>
-    <div class="form-check">
-        {{ form.in_class(class='form-check-input') }}
-        {{ form.in_class.label(class='form-check-label') }}
-    </div>
-    <div class="form-group">
-        {{ form.user.label }}
-        {{ form.user(class='form-control') }}
-    </div>
-    <div class="form-group">
-        {{ form.course.label }}
-        {{ form.course(class='form-control') }}
-    </div>
-    {{ form.submitnote(class='btn btn-primary') }}
-</form>
+    
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{url_for('index')}}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Manage Notes</li>
+        </ol>
+    </nav>
+    <table class="table table-borderless">
+        <tbody>
+            {% for note in notes %}
+                <tr>
+                    <td>{{note.id}}</td>
+                    <td>{{note.user.f_name}}</td>
+                    <td>{{note.user.l_name}}</td>
+                    <td>{{note.date}}</td>
+                    <td>{{note.absent}}</td>
+                    <td>{{note.note}}</td>
+                    <td><a href="{{url_for('notes.edit')}}?id={{note.id}}" class="btn btn-secondary">Edit</a></td>
+                    <td>
+                        <form action="{{url_for('notes.delete')}}" method="POST">
+                            <input type="hidden" value="{{note.id}}" name="id" />
+                            <input type="submit" class="btn btn-danger" value="Delete" />
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{url_for('notes.add')}}" class="btn btn-secondary">Add Note</a>
+
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
 {% endblock %}
+
+

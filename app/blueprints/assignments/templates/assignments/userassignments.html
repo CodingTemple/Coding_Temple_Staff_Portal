@@ -3,10 +3,66 @@
 {% block title %}{{ title }} | {{ super() }}{% endblock %}
 
 {% block app_content %}
-    <h1>Working</h1>
+
+    <h1>{{assignment.name}}</h1>
+    <sub>{{assignment.description}}</sub>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Completed Date</th>
+                <th>Note</th>
+                <th>Save</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user_assignment in assignment.user_assignments %}
+                <tr>
+                    <td>{{ user_assignment.user.f_name }}</td>
+                    <td>{{ user_assignment.user.l_name }}</td>
+                    <td>
+                        <input type="date" class="form-control completed_date_{{user_assignment.user_id}}" name="completed_date_{{user_assignment.user_id}}" value="{{user_assignment.completed_date.strftime('%Y-%m-%d') if user_assignment.completed_date else ''}}" />
+                    </td>
+                    <td><textarea class='form-control note_{{user_assignment.user_id}}' name="note_{{user_assignment.user_id}}">{{ user_assignment.note or '' }}</textarea></td>
+                    <td><button class="btn btn-primary" onclick="update(event, {{user_assignment.user_id}})">Update</button></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        
+    </table>
+    
+
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
+<script type="text/javascript">
+    var aid = {{assignment.id}};
+
+    function update(event, uid){
+        var cd, n;
+
+        cd = document.querySelector('.completed_date_' + uid).value;
+        n = document.querySelector('.note_' + uid).value;
+
+        event.target.innerHTML = 'wait';
+        event.target.setAttribute('disabled', 'disabled');
+        event.preventDefault();
+        fetch('/assignments/userupdate', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json; charset=utf-8"
+            },
+            body: JSON.stringify({aid:aid, uid:uid, cd:cd, n:n})
+            })
+            .then(() => {
+                event.target.removeAttribute('disabled');
+                
+                event.target.innerHTML = "Update"
+            }); 
+    }
+</script>
+    
 {% endblock %}
 

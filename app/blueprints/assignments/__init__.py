@@ -1,9 +1,11 @@
-from flask import abort, Blueprint, current_app, flash, redirect, request, render_template,request, url_for
+from flask import abort, Blueprint, current_app, flash, redirect, request, render_template,request, url_for, jsonify
 from flask_login import current_user, login_required
-from app.models import db, Assignment, Course, UserAssignment
+from app.models import db, Assignment, Course, UserAssignment, UserCourse
 
 from app.blueprints.assignments.forms import AssignmentForm
 from app.decorators import authorize
+
+import datetime
 
 assignments = Blueprint('assignments', __name__, template_folder='templates', static_folder='static')
 
@@ -95,12 +97,31 @@ def delete():
 @login_required
 @authorize
 def userassignments():
-  id = request.args.get('id')
+  id = int(request.args.get('id'))
   assignment = Assignment.query.get(id)
-  user_ids = [user_course.user_id for user_course in assignment.course.user_courses.all()]
-  print(user_ids)
+  # Add all existing assignments:
+  for user_course in assignment.course.user_courses:
+    emptyAssignment = next((obj for obj in assignment.user_assignments if obj.user_id==user_course.user_id), None)
+    if emptyAssignment is None:
+      emptyAssignment = UserAssignment(assignment_id = id, user_id=user_course.user_id)
+      db.session.add(emptyAssignment)
+      db.session.commit()
   context = {
       'assignment': assignment,
-      # 'users': users
   }
   return render_template('assignments/userassignments.html', **context)
+
+@assignments.route('/userupdate', methods=['POST'])
+@login_required
+@authorize
+def userupdate():
+  assignment_id = int(request.json['aid'])
+  user_id = int(request.json['uid'])
+  completed_date = request.json['cd']
+  note = request.json['n']
+  userAssignment = UserAssignment.query.get([user_id, assignment_id])
+  userAssignment.note = note
+  if(completed_date):
+    userAssignment.completed_date = datetime.datetime.strptime(completed_date,'%Y-%m-%d')
+  db.session.commit()
+  return jsonify(success=True)
