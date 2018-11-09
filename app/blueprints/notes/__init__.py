@@ -21,12 +21,44 @@ def index():
 @login_required
 @authorize
 def edit():
-  return render_template('/notes/edit.html', **context)
+  form = NoteForm()
+  id = int(request.args.get('id'))
+  note = Note.query.get(id)
+  if request.method == 'POST':
+    if form.validate_on_submit():
+      if form.date.data:
+        note.date = form.date.data
+      note.absent = form.absent.data
+      note.user_id = form.user.data
+      note.note = form.note.data
+      db.session.commit()
+      flash('Note Updated', 'success')
+      return redirect(url_for('.index'))
+    else:
+      flash('There was a problem adding this note', 'danger')
+  else: 
+    if note.date:
+      form.date.data = note.date
+      form.time.data = note.date
+    form.absent.data = note.absent
+    form.user.data = note.user_id
+    form.note.data = note.note
+  context = {
+    'title': 'Edit ' + str(note.id),
+    'form': form
+  }
+  return render_template('/notes/form.html', **context)
 
 @notes.route('/delete', methods=['POST'])
 @login_required
 @authorize
 def delete():
+  id = int(request.form['id'])
+  note = Note.query.get(id)
+  if(note):
+    db.session.delete(note)
+    db.session.commit()
+    flash('Note Deleted', 'success')
   return redirect(url_for('.index'))
 
 @notes.route('/add', methods=['GET', 'POST'])
@@ -39,12 +71,12 @@ def add():
       note = Note(date= form.date.data, note=form.note.data, absent=form.absent.data, user_id=form.user.data )
       db.session.add(note)
       db.session.commit()
-      flash('Note Added', 'Success')
+      flash('Note Added', 'success')
       return redirect(url_for('.index'))
     else:
       flash('There was a problem adding this note', 'danger')
   context = {
-    'title': 'Notes',
+    'title': 'Add a Note',
     'form': form
   }
-  return render_template('/notes/add.html', **context)
+  return render_template('/notes/form.html', **context)

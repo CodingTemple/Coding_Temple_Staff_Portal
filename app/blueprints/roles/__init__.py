@@ -43,7 +43,7 @@ def add():
 def edit():
   form = RoleForm()
   rid = request.args.get('id') or form.rid.data
-  role = Role.query.filter_by(id=rid).first()
+  role = Role.query.get(rid)
   if rid is None or role is None:
     flash('Role not found', 'danger')
     return redirect(url_for('.index'))

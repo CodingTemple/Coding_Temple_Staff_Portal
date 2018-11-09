@@ -9,7 +9,7 @@ class NoteForm(FlaskForm):
   note = TextAreaField('Note', validators=[DataRequired()])
   absent = BooleanField('absent')
   user = SelectField('User', validators=[DataRequired()], coerce=int)
-  submitnote = SubmitField('Submit Note')
+  submit = SubmitField('Save')
 
   def __init__(self):
     super().__init__()
