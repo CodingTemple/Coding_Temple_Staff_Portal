@@ -5,6 +5,9 @@ from app.models import db, Course, UserCourse
 
 from app.decorators import authorize
 
+import re
+import datetime
+
 courses = Blueprint('courses', __name__, template_folder='templates', static_folder='static')
 
 @courses.route('/edit', methods=['GET', 'POST'])
@@ -81,13 +84,36 @@ def delete():
     flash('Cannot delete this course', 'danger')
   return redirect(url_for('courses.index'))
 
-@courses.route('/usercourses', methods=['GET'])
+@courses.route('/usercourses', methods=['GET', 'POST'])
 @login_required
 @authorize
 def usercourses():
   id = request.args.get('id')
   course = Course.query.get(id)
-  user_courses = course.user_courses.all()
+  if request.method == 'POST':
+    posted_user_courses = []
+    for key in request.form.keys():
+      if(key.startswith('user_course')):
+        trimmed_key = key[11:] 
+        id = int(re.search('\[(.*?)\]', trimmed_key).group(1))
+        prop =  trimmed_key[trimmed_key.index('.')+1:]
+        if(len(posted_user_courses) == id):
+          posted_user_courses.insert(id,{})
+        posted_user_courses[id][prop] = request.form.getlist(key)[0]
+    for posted_user_course in posted_user_courses:
+      existing_user_course = UserCourse.query.get([posted_user_course['user_id'], posted_user_course['course_id']])
+      if existing_user_course.withdrawl_date != posted_user_course['withdrawl_date']:
+        if posted_user_course['withdrawl_date'] != '':
+          existing_user_course.withdrawl_date = datetime.datetime.strptime(posted_user_course['withdrawl_date'], '%Y-%m-%d')
+        else:
+          existing_user_course.withdrawl_date = None
+      if existing_user_course.withdrawl_reason != posted_user_course['withdrawl_reason']:
+        existing_user_course.withdrawl_reason = posted_user_course['withdrawl_reason']
+      
+      db.session.commit()
+    return redirect(url_for('courses.usercourses') + "?id=" + str(course.id))
+  else:
+    user_courses = course.user_courses.all()
   print(user_courses)
   context = {
       'course': course,
@@ -103,6 +129,17 @@ def useradd():
   cid = request.json['cid']
   newUserCourse = UserCourse(user_id=uid, course_id=cid)
   db.session.add(newUserCourse)
+  db.session.commit()
+  return redirect(url_for('courses.usercourses') + "?id=" + cid)
+
+@courses.route('/userdelete', methods=['POST'])
+@login_required
+@authorize
+def userdelete():
+  uid = request.json['uid']
+  cid = request.json['cid']
+  course = UserCourse.query.get([uid, cid])
+  db.session.delete(course)
   db.session.commit()
   return redirect(url_for('courses.usercourses') + "?id=" + cid)
 

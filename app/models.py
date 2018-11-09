@@ -94,7 +94,6 @@ class Note(TimestampMixin, db.Model):
 class UserCourse(TimestampMixin, db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     course_id = db.Column(db.Integer, db.ForeignKey('course.id'), primary_key=True)
-    completion_date = db.Column(db.DateTime, nullable=True)
     withdrawl_date = db.Column(db.DateTime, nullable=True)
     withdrawl_reason = db.Column(db.String, nullable=True)
     user = db.relationship('User', lazy='subquery', backref=db.backref('user_courses', lazy='dynamic'))

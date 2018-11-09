@@ -3,7 +3,7 @@
 {% block title %}{{ title }} | {{ super() }}{% endblock %}
 
 {% block app_content %}
-    <h1>Working</h1>
+    <h1>{{ course.name }}</h1>
     <div class="form-row">
         <div class="col-2">
             <label for="usersearch">Lookup</label>
@@ -18,45 +18,66 @@
         </div>
         
     </div>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Completion Date</th>
-                <th>Withdrawl Date</th>
-                <th>Withdrawl Reason</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for user_course in user_courses %}
-            <tr>
-                <td>
-                    {{user_course.user.f_name}}
-                </td>
-                <td>
-                    {{user_course.user.l_name}}
-                </td>
-                <td>
-                    {{user_course.completion_date}}
-                </td>
-                <td>
-                    {{user_course.withdrawl_date}}
-                </td>
-                <td>
-                    {{user_course.withdrawl_reason}}
-                </td>
-            </tr>
-            
-        {% endfor %}
-    </tbody>
-    </table>
+    <form method="POST">
+        <input type="submit" class="btn btn-primary" value="Save Changes" />
+        <input type="hidden" value="{{course.id}}" name="id" />
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Withdrawl Date</th>
+                    <th>Withdrawl Reason</th>
+                    <th>Remove User</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for user_course in user_courses %}
+                <tr>
+                    <td>
+                        <input type="hidden" name="user_course[{{loop.index - 1}}].user_id" value="{{user_course.user_id}}" />
+                        <input type="hidden" name="user_course[{{loop.index - 1}}].course_id" value="{{user_course.course_id}}" />
+                        {{user_course.user.f_name}}
+                    </td>
+                    <td>
+                        {{user_course.user.l_name}}
+                    </td>
+                    <td>
+                        <input class="form-control" placeholder="withdrawl date" type="date" name="user_course[{{loop.index - 1}}].withdrawl_date" value="{{user_course.withdrawl_date.strftime('%Y-%m-%d') if user_course.withdrawl_date else ''}}" />  
+                    </td>
+                    <td>
+                        <textarea class="form-control" name="user_course[{{loop.index - 1}}].withdrawl_reason" placeholder="withdrawl reason" >{{user_course.withdrawl_reason or ''}}</textarea>
+                    </td>
+                    <td>
+                        <button class="btn btn-danger" onclick="deleteuser(event, {{user_course.user_id}})">Delete</button>
+                    </td>
+                </tr>
+                
+            {% endfor %}
+        </tbody>
+        </table>
+    </form>
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
 <script type="text/javascript">
     var cid = {{course.id}};
+
+    function deleteuser(event, u){
+        event.preventDefault();
+        fetch('/courses/userdelete', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json; charset=utf-8"
+            },
+            redirect: "follow",
+            body: JSON.stringify({uid:u, cid:cid})
+            })
+            .then(() => {
+                window.location.href = window.location.href;
+            }); 
+    }
 
     function adduser(){
         var u = parseInt(document.querySelector('#usersearch').value);
