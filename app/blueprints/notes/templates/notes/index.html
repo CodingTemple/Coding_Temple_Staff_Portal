@@ -27,7 +27,7 @@
                 <tr>
                     <td>{{note.user.f_name}}</td>
                     <td>{{note.user.l_name}}</td>
-                    <td>{{note.date}}</td>
+                    <td>{{moment(note.date).format('LL')}}</td>
                     <td>{{note.absent}}</td>
                     <td>{{note.note}}</td>
                     <td><a href="{{url_for('notes.edit')}}?id={{note.id}}" class="btn btn-secondary">Edit</a></td>
